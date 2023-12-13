@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from . models import User
 from .serializers import RegisterUserSerializer, MyTokenObtainPairSerializer
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 
-class Register(APIView):
+"""class Register(APIView):
     def post (self, request):
         data  = request.data
         user = User.objects.create(
@@ -14,7 +15,6 @@ class Register(APIView):
             name = data['name'],
             last_name = data['last_name'],
             phone_number = data['phone_number'],
-            cuil = data['cuil'],
             password = make_password(data ['password'])
             
         )
@@ -23,4 +23,23 @@ class Register(APIView):
          
 
 class LoginView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer"""
+
+@api_view(['POST'])
+def register(request):
+    data = request.data
+    user = User.objects.create(
+            email = data['email'],
+            name = data['name'],
+            last_name = data['last_name'],
+            phone_number = data['phone_number'],
+            password = make_password(data['password'])
+            )
+    serializer = RegisterUserSerializer(user, many=False)
+    return Response(serializer.data)
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+

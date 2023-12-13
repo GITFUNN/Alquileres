@@ -1,0 +1,1 @@
+import Highcharts from 'highcharts';

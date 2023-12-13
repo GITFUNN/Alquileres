@@ -1,8 +1,8 @@
-const HomePage = ()=>{
-    return (
-        <>
-        <h1>HOME</h1>
-        </>
+const HomePage = () =>{
+    return(
+    <div>
+
+    </div>
     )
 }
-export default HomePage
+export default HomePage;

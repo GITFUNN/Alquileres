@@ -53,7 +53,7 @@ const LoginPage = () => {
       
 
     return (
-            <div className='sm:min-h-screen sm:flex items-center sm:justify-center'
+            <div className='min-h-screen flex items-center justify-center'
 
 style={{
   backgroundImage: `url(${backimage})`,
@@ -69,7 +69,7 @@ style={{
 <span className = "text-gray-50 text-2xl font-jost">RentFlow</span>
 
 </Link>
-<div className="w-full md:py-4 md:w-[500px] bg-slate-50 rounded-lg border-gray-300">
+<div className="w-full md:py-4 sm:w-[500px] bg-slate-50 rounded-lg border-gray-300">
   <div className="px-4 py-6 space-y-4">
   <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Login in to RentFlow 

@@ -9,7 +9,6 @@ import Logo2 from '../assets/Logo01.png';
 
 const Header = () =>{
     const { isAuth } = useAuthStore()
-
     function logOutFun() {
         useAuthStore.getState().logout()
         window.location.href = '/login'
@@ -88,7 +87,7 @@ const Header = () =>{
                             Announcements
                           </Link>
                           <Link
-                            to={'condominiums/'}
+                            to={'/requests'}
                             className='text-black p-2 px-4 rounded-lg hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'
                           >
                             Requests
@@ -184,25 +183,25 @@ const Header = () =>{
   
             <Disclosure.Panel className="sm:hidden">
   
-  
-              <div className="flex mx-2">
-                <div className="absolute inset-y-[72px] left-2 px-4 flex pl-3 pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
-                  <span className="sr-only">Search icon</span>
+    
+                <div className="flex mx-2">
+                  <div className="absolute inset-y-[72px] left-2 px-4 flex pl-3 pointer-events-none">
+                    <svg className="w-5 h-5 text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+                    <span className="sr-only">Search icon</span>
+                  </div>
+                  <input type="text" id="search-navbar" className="block w-full p-2
+                    pl-10 text-sm text-gray-900 border border-gray-300 rounded-full 
+                    bg-gray-50 dark:bg-gray-700 outline-none
+                    dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  
+                    " placeholder="Search..."/>
                 </div>
-                <input type="text" id="search-navbar" className="block w-full p-2
-                  pl-10 text-sm text-gray-900 border border-gray-300 rounded-full 
-                  bg-gray-50 dark:bg-gray-700 outline-none
-                  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  
-                  " placeholder="Search..."/>
-              </div>
-  
-              <div className="space-y-1 px-2 pb-3 pt-2">
-                {/*       item.current ? 'bg-slate-400 text-black dark:bg-gray-900 dark:text-white' : */}
-                {/*         'text-black hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white', */}
-                {/* 'block rounded-md px-3 py-2 text-base font-medium' */}
-                {isAuth ? (
-                  <div className="w-full grid grid-cols-1">
+    
+                <div className="space-y-1 px-2 pb-3 pt-2">
+                  {/*       item.current ? 'bg-slate-400 text-black dark:bg-gray-900 dark:text-white' : */}
+                  {/*         'text-black hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white', */}
+                  {/* 'block rounded-md px-3 py-2 text-base font-medium' */}
+                  {isAuth ? (
+                    <div className="w-full grid grid-cols-1">
   <Link
                       to={'/'}
                       className='bg-slate-400 p-2 px-4 rounded-lg text-black dark:bg-gray-900 dark:text-white' 
@@ -235,13 +234,13 @@ const Header = () =>{
                       Announcements
                     </Link>
                     <Link
-                      to={'/'}
+                      to={'/requests'}
                       className='text-black p-2 px-4 rounded-lg hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'
                     >
                       Request
                     </Link>
                     <Link
-                      to={'/'}
+                      to={'/options'}
                       className='text-black p-2 px-4 rounded-lg hover:bg-slate-400 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'
                     >
                       Options

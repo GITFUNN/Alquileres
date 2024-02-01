@@ -9,7 +9,7 @@ const EditCondominiumPage = ()=>{
     const navigate = useNavigate();
     const [condominium_name, setCondominiumName] = useState<string>("");
     const [condominium_location, setCondominiumLocation] = useState<string>("");
-
+  
     const { id } = useParams();
     let condId:number;
     if (id !== undefined){

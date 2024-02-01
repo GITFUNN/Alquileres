@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User
-
+from condominiums.models import JoiningRequest
 class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -14,4 +14,15 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
         token['phone_number'] = user.phone_number       
         return token
-            
+
+class GetUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email','id']
+
+class GetSenderRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email']             
+
+

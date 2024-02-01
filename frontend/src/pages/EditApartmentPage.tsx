@@ -4,9 +4,12 @@ import { Toaster, toast } from 'react-hot-toast';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { editApartmentRequest, getApartmentRequest } from '../api/apartment';
 
+export interface RenterApartent{
+  renters:number,
+  ApId:number,
+}
 
-
-const EditApartment = ()=>{
+const EditApartment = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const [number, setApartmentNumber] = useState("");
@@ -64,9 +67,6 @@ const editMutation = useMutation({
     });
 
   };
-  
-
-
   return (
 
     <div>
@@ -89,7 +89,6 @@ const editMutation = useMutation({
               onChange={(e) => setApartmentNumber(e.target.value)}
               type="string" name=" number" id=' number' className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500 transition duration-25 focus:scale-105" placeholder="Unity Number" />
            </div>
-    
            <div>
              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
              <input
@@ -104,8 +103,6 @@ const editMutation = useMutation({
         </div>
         <Toaster />
     </div>
-
-
   );
 }
 

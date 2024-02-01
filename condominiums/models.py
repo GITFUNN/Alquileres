@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from datetime import datetime
 # Create your models here.
 class Condominium(models.Model):
     condominium_name = models.CharField(max_length=100)
@@ -26,3 +27,26 @@ class PrivNotices(models.Model):
     message = models.TextField(max_length=400, blank = True)
     image = models.ImageField(upload_to='media', blank= True, null= True, default = None)
 
+class JoiningRequest(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    sender = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name= "senders")
+    recipient = models.ForeignKey('users.User',on_delete = models.CASCADE, related_name = "recipient")
+    condominium = models.ForeignKey(Condominium, on_delete=models.CASCADE, related_name="origin")
+    apartment = models.ForeignKey(Apartment, on_delete = models.CASCADE, related_name = "my_apartment")
+    active = models.BooleanField(default=True)
+    rejected = models.BooleanField(default= False)
+
+    def accept_invitation(self):
+        self.active = False
+        self.save()
+
+    def reject_invitation(self):
+        self.active = False
+        self.rejected = True
+        self.save()
+        
+
+
+
+    
+    

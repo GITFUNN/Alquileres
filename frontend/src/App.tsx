@@ -8,9 +8,10 @@ import EditCondominiumPage from "./pages/EditCondominiumPage";
 import CondominiumPage from "./pages/CondominiumsPage";
 import GetSoloCondominium from "./pages/GetSoloCondominium";
 import EditApartment from "./pages/EditApartmentPage";
+import GetSoloApartment from "./pages/GetSoloApartment";
+import RequestsSection from "./pages/RequestsSection";
 function App() {
   return (
-   
     <BrowserRouter>
       <Routes>
         <Route path = "/register" element = {<RegisterPage/>}/>
@@ -20,6 +21,8 @@ function App() {
         <Route path = "condominiums/edit/:id" element = {<EditCondominiumPage/>}/>
         <Route path = "condominiums/:id/apartments/:sId" element = {<EditApartment/>}/>
         <Route path = "condominiums/:id" element = {<GetSoloCondominium/>}/>
+        <Route path = "condominiums/:id/:sId" element = {<GetSoloApartment/>}/>
+        <Route path = "/requests" element = {<RequestsSection/>}/>
         <Route path = "/condominiums" element = {<CondominiumPage/>}/>
         <Route index element = {<HomePage />} />
         </Route>
@@ -28,5 +31,4 @@ function App() {
   
   );
 }
-
 export default App

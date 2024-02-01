@@ -30,8 +30,6 @@ export const createApartmentRequest = async ( rooms_number: number, number: stri
  };
  
 
-
-
 export const editApartmentRequest = async(data : Apartment) =>{
     const formData = new FormData();
         formData.append('rooms_number', data.rooms_number.toString())

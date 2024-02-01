@@ -3,9 +3,10 @@ from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from . models import User
-from .serializers import RegisterUserSerializer, MyTokenObtainPairSerializer
+from .serializers import RegisterUserSerializer, MyTokenObtainPairSerializer,GetUserSerializer,GetSenderRequestSerializer
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
+from rest_framework import status
 
 """class Register(APIView):
     def post (self, request):
@@ -41,5 +42,21 @@ def register(request):
 
 class MyTokenObtainPairSerializer(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+    
+@api_view(['GET'])
+def get_user(request, email):
+    try:
+        user = User.objects.get(email=email)
+        serializer = GetUserSerializer(user)
+        return Response(serializer.data)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+    
+@api_view(['GET'])
+def getSenderEmail(request,pk):
+    sender = User.objects.get(pk = pk)
+    serializer = GetSenderRequestSerializer(sender)
+    return Response(serializer.data, status = status.HTTP_200_OK)
+
 
 

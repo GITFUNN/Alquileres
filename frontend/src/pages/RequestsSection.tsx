@@ -5,6 +5,8 @@ import { useQuery ,useMutation, useQueryClient, } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import SetRenterPage from './setRenter';
 import SetRequestState from "./SetRequestState";
+import jjrequest from '../assets/jjrequest.svg';
+
 interface Requests {
     id:number;
     recipient:number; 
@@ -65,26 +67,28 @@ const RequestsSection = () => {
   }
 
   return (
-    <div className='sm:flex sm:justify-center sm:items-center'>
-      <div className = 'mx-auto my-auto'>
-          
-
-        {requests.map((request) => (
-          <div key={request.id} className="w-full sm:py-4 sm:w-[500px] bg-slate-50 rounded-lg border-gray-300 sm:justify-center my-4 sm:my-2">
-            <div className = 'flex'>
-            <p className="px-4 py-4"> <TruncateDate timestamp ={request.timestamp}/></p>
-            <p className="px-4 py-4">Owner {request.senderEmail}</p>
-            </div>
-            <p className="px-4 py-4">Apartment Number: {request.apartmentDetails}</p>
-            <p className="px-4 py-4">Condominium: {request.condominiumDetails}</p>
+      <div className='flex justify-center'>
+        <div className = 'mx-auto my-auto w-11/12'>
             
-            <SetRequestState ApId={request.apartment} UserId={request.recipient} id ={request.id}/>
-           
-          </div>
-          
-        ))}
+
+          {requests.map((request) => (
+            <div key={request.id} className="w-11/12 sm:py-4 sm:w-[500px] bg-white text-black justify-center my-6 sm:my-2 mx-auto">
+              <div className="rounded-lg border-black border">
+              <div className="flex justify-center items-center">
+              <img className="w-6 h-6" src={jjrequest} alt="jrequest"/>
+              <span className="px-4 py-3 text-center font-medium text-lg ">Condominium Request</span>
+              </div>
+              <p className="px-4 py-3 selection:bg-indigo-500"> <TruncateDate timestamp ={request.timestamp}/></p>
+              <p className="px-4 py-3 selection:bg-indigo-500">Dear Resident,</p>
+              <p className="px-4 py-3 mb-5 selection:bg-indigo-500">You are hereby granted access to the condominium <a className="underline decoration-indigo-500 font-medium">{request.condominiumDetails}</a> by the owner <a className="underline decoration-indigo-500 font-medium">{request.senderEmail}</a>. This access is valid for the following apartment: <a className="underline decoration-indigo-500 font-medium">{request.apartmentDetails}</a></p>            
+              <SetRequestState ApId={request.apartment} UserId={request.recipient} id ={request.id}/>
+              </div>
+            </div>
+            
+          ))}
+        </div>
+        
       </div>
-    </div>
   );
 };
 export default RequestsSection

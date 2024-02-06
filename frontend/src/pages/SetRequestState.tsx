@@ -31,8 +31,7 @@ const SetRequestState =({ ApId, UserId, id }: Props)=>{
     const editMutation = useMutation({
         mutationFn: setRequestState,
         onSuccess:() =>{
-          queryClient.invalidateQueries({queryKey:['requests']});
-          toast.success("Edit successful")   
+          queryClient.invalidateQueries({queryKey:['requests']});  
           
         },
       
@@ -51,7 +50,7 @@ const SetRequestState =({ ApId, UserId, id }: Props)=>{
         onSuccess: ()=>{
           setRejected(true);
           queryClient.invalidateQueries(["requests"]) 
-          toast.success("Request Rejected")
+          toast.success("Done!");
         },
         onError: (error) => {
           console.error(error);
@@ -60,8 +59,7 @@ const SetRequestState =({ ApId, UserId, id }: Props)=>{
       const editMutationRe = useMutation({
         mutationFn: setRenter,
         onSuccess: () =>{
-          queryClient.invalidateQueries({queryKey:['apartments']});
-          toast.success("Edit successful")   
+          queryClient.invalidateQueries({queryKey:['apartments']});   
           
         },
     
@@ -99,11 +97,27 @@ const SetRequestState =({ ApId, UserId, id }: Props)=>{
       
 
 return (
-<div className ="grid grid-cols-2">
-<button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-l-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 col-start-1" onClick={handleAccept}>ACCEPT</button>
-<button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-r-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 col-start-2"onClick={() => {
-                              deleteJoiningRequestMutation.mutate((id));
-                            }}>REJECT</button>
+<div className="grid grid-cols-2 gap-4">
+  <button
+    type="submit"
+    className="w-11/12 text-white bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center place-self-end mb-4 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 "
+    onClick={() => {
+      handleAccept();
+      deleteJoiningRequestMutation.mutate(id); // Llama a la función de mutación para eliminar
+    }}
+  > 
+    ACCEPT
+  </button>
+
+  <button
+    type="submit"
+    className="w-11/12 text-black border border-black bg-white hover:bg-black hover:text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-4 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 "
+    onClick={() => {
+      deleteJoiningRequestMutation.mutate(id); // Llama directamente a la función de mutación para eliminar
+    }}
+  >
+    DELETE
+  </button>
 </div>
 
 )

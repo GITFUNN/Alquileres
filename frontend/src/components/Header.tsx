@@ -6,7 +6,6 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Logo from '../assets/logo02.png'
 import Logo2 from '../assets/Logo01.png';
 
-
 const Header = () =>{
     const { isAuth } = useAuthStore()
     function logOutFun() {
@@ -22,6 +21,7 @@ const Header = () =>{
 
 
       return (
+        
         <Disclosure as="nav" className="bg-grey dark:bg-gray-800">
         {({ open }) => (
           <>
@@ -269,6 +269,7 @@ const Header = () =>{
           </>
         )}
       </Disclosure>
+  
     )
 
 }

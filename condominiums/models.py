@@ -20,12 +20,25 @@ class GroupNotices(models.Model):
     image = models.ImageField(upload_to='media', blank= True, null= True, default = None)
     condominium = models.ForeignKey(Condominium, related_name="group_notices", on_delete = models.CASCADE)
 
+class RentReceipt(models.Model):
+    owner = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='receipt_owner', default = None)
+    apartment_receipt = models.ForeignKey(Apartment, related_name='apartment_receipt', on_delete=models.CASCADE, default = None)
+    number = models.IntegerField(default = 0, unique = True)
+    date = models.DateField(auto_now_add=False)
+    recident_name = models.CharField(max_length=40)
+    net_amount = models.DecimalField(max_digits= 20, decimal_places=2)
+    expenses = models.DecimalField(max_digits= 20, decimal_places=2)
+    expiry_date = models.DateField(auto_now_add=False)
+    phone_number = models.IntegerField(default = None, null = True, blank = True)
+
 class PrivNotices(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
-    sender = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='sent_messages')
-    recipient = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='received_messages')
+    owner_sender = models.ForeignKey('users.User',related_name='sender',  on_delete=models.CASCADE, default = None)
+    apartment_resipient = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='received_messages', default = None)
     message = models.TextField(max_length=400, blank = True)
     image = models.ImageField(upload_to='media', blank= True, null= True, default = None)
+    rent_receipt = models.ForeignKey(RentReceipt, blank = True, null = True, default = None, on_delete=models.CASCADE)
+
 
 class JoiningRequest(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)

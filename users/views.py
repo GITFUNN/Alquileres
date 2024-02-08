@@ -54,9 +54,10 @@ def get_user(request, email):
     
 @api_view(['GET'])
 def getSenderEmail(request,pk):
-    sender = User.objects.get(pk = pk)
-    serializer = GetSenderRequestSerializer(sender)
-    return Response(serializer.data, status = status.HTTP_200_OK)
-
+    if pk is not None:
+        sender = User.objects.get(pk = pk)
+        serializer = GetSenderRequestSerializer(sender)
+        print(serializer.data)
+        return Response(serializer.data, status = status.HTTP_200_OK)
 
 

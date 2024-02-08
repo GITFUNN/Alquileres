@@ -5,6 +5,7 @@ import React, { useState, Fragment } from "react";
 import { Link } from  'react-router-dom';
 import { Menu, Transition } from '@headlessui/react';
 import options from '../assets/options.svg';
+import backimage from '../assets/cssback.png'
 
 
 
@@ -40,7 +41,7 @@ function classNames(...classes: any) {
 if (error instanceof Error) return <>{toast.error(error.message)}</>
 return (
   
-    <div className="flex justify-center ">
+    <div className="flex justify-center">
       
       <div className = 'mx-auto my-auto w-11/12'>
       
@@ -156,7 +157,7 @@ return (
 
         </div>                        
     </div>
-   
+  
   )
 }
 

@@ -70,7 +70,6 @@ const RequestsSection = () => {
       <div className='flex justify-center'>
         <div className = 'mx-auto my-auto w-11/12'>
             
-
           {requests.map((request) => (
             <div key={request.id} className="w-11/12 sm:py-4 sm:w-[500px] bg-white text-black justify-center my-6 sm:my-2 mx-auto">
               <div className="rounded-lg border-black border">

@@ -10,8 +10,12 @@ import GetSoloCondominium from "./pages/GetSoloCondominium";
 import EditApartment from "./pages/EditApartmentPage";
 import GetSoloApartment from "./pages/GetSoloApartment";
 import RequestsSection from "./pages/RequestsSection";
+
 function App() {
   return (
+   
+   
+    
     <BrowserRouter>
       <Routes>
         <Route path = "/register" element = {<RegisterPage/>}/>
@@ -28,7 +32,6 @@ function App() {
         </Route>
       </Routes>
    </BrowserRouter>
-  
-  );
+  );  
 }
 export default App

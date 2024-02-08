@@ -60,6 +60,7 @@ def get_apartments(request,pk):
     if request.user == condominium.owner:
         apartments = Apartment.objects.filter(condominium = condominium)
         serializer = ApartmentSerializer(apartments, many = True)
+        print(serializer.data)
         return Response(serializer.data)
     else: 
         return Response(status=status.HTTP_401_UNAUTHORIZED)

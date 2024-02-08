@@ -3,8 +3,12 @@ import { Toaster} from 'react-hot-toast';
 import Header from './Header';
 
 
+
+
+
 const Layout = () =>{
     return(
+        
         <div>
             <Toaster/>
             <Header/>
@@ -12,6 +16,7 @@ const Layout = () =>{
             <Outlet/>
             </div>
         </div>
+  
     )
 }
 export default Layout

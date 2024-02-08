@@ -45,6 +45,13 @@ const createMutation = useMutation({
      
      
      <div className="w-full md:w-[600px] border border-black rounded-lg">
+     <div className="">
+
+<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 top-2 left-2 relative hover:bg-gray-100 rounded-lg cursor-pointer hover:stroke-violet-800" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" onClick={() => navigate(-1)}>
+< path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+</svg>
+
+</div>
        <div className="px-4 py-6 space-y-4 ">
         <div className='flex justify-center pb-2'>
 

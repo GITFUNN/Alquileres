@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.bg-custom-background-image {
+    background-image: url('./assets/cssback.png'); /* Reemplaza '/path/to/your/image.jpg' con la ruta correcta a tu imagen */
+    background-size: cover /* Ajusta el tamaño de la imagen al contenedor */
+     /* Centra la imagen */
+    /* Agrega cualquier otra propiedad de background que desees */
+  }

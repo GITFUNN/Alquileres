@@ -2,7 +2,7 @@ import { getApartmentsRequest, deleteApartmentRequest, createApartmentRequest } 
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import React, { useState } from "react";
 import { toast, Toaster } from 'react-hot-toast';
-import { Link, useNavigate, useParams  } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import { createJoiningRequest } from '../api/joining';
 import { getUser } from '../api/user';
 
@@ -24,6 +24,7 @@ const JoiningRequest =({ ApId }: Props )=>{
       const [recipient, setRecipientId] = useState("");
       const [active, setActive] = useState(true);
       const [rejected, setRejected] = useState(false);
+   
 
       const createJoiningRequests = useMutation({
         mutationFn: async () => {
@@ -48,21 +49,61 @@ const JoiningRequest =({ ApId }: Props )=>{
         createJoiningRequests.mutate();
       };
       
+      
 return (
    
-    <>
-     <form className="space-y-4 sm:grid sm:col-span-2 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0" onSubmit={handleSubmit}>
-           <div>
-           <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-             <input
-              value={recipient}
-              onChange={(e) => setRecipientId((e.target.value))}
-             type="text" name="recipient" id='recipient' className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500 transition duration-25 focus:scale-105" placeholder="Name of the User"/>
-           </div>           
-           <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 col-start-2">Send</button>
-           </form>
-            
-    </>
+  <div>
+  <div className="flex items-center justify-center px-6 py-8 mx-auto">
+
+
+<div className="w-full md:w-[600px] border border-black rounded-lg">
+<div className="">
+
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 top-2 left-2 relative hover:bg-gray-100 rounded-lg cursor-pointer hover:stroke-violet-800" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" onClick={() => navigate(-1)}>
+        < path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+       
+        </div>
+ <div className="px-4 py-6 space-y-4 ">
+  <div className='flex justify-center pb-2'>
+
+  <div className ='text-center' >
+  
+  <h1 className='text-lg font-medium'>Apartment Request</h1>
+  </div>
+  </div>
+   <form className="space-y-4 " onSubmit={handleSubmit}>
+     <div>
+      
+       <label htmlFor="name" className="block mb-2 text-sm font-medium text-black">Mail of the User</label>
+       <div className='flex items-center'>
+       <span className='inline-block align-middle'>
+      <svg className='h-4 w-4 fill-none stroke-violet-800' xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+</svg>
+
+      </span> 
+       <input
+       value={recipient}
+       onChange={(e) => setRecipientId(e.target.value)}
+       type="location" name="condominium_location" id="condominium_location" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg transition duration-50 block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500" placeholder="Location"/>
+       </div>
+     </div>
+     <div className='flex items-center py-4'>
+       <span className='inline-block align-middle'>
+      <svg className='h-4 w-4 stroke-transparent fill-transparent' xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+</svg>
+
+      </span>
+     <button type="submit" className="w-full font-medium text-white bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-900 col-start-2 transition duration-25">Send</button>
+     </div>
+     </form>
+      </div>
+      </div>
+  </div>
+  <Toaster />
+</div>
    
 
 )

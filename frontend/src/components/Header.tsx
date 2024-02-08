@@ -6,6 +6,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Logo from '../assets/logo02.png'
 import Logo2 from '../assets/Logo01.png';
 
+
 const Header = () =>{
     const { isAuth } = useAuthStore()
     function logOutFun() {
@@ -21,6 +22,7 @@ const Header = () =>{
 
 
       return (
+        
         
         <Disclosure as="nav" className="bg-grey dark:bg-gray-800">
         {({ open }) => (
@@ -165,7 +167,7 @@ const Header = () =>{
                             {({ active }) => (
                               <span
                                 onClick={logOutFun}
-                                className={classNames(active ? 'bg-gray-100 dark:bg-slate-700' : '', 'block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200')}
+                                className={classNames(active ? 'bg-red-500 text-white dark:bg-slate-700' : '', 'block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200')}
                               >
                                 Sign out
                               </span>

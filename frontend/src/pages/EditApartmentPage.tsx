@@ -4,17 +4,14 @@ import { Toaster, toast } from 'react-hot-toast';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { editApartmentRequest, getApartmentRequest } from '../api/apartment';
 
-export interface RenterApartent{
-  renters:number,
-  ApId:number,
-}
 
 const EditApartment = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const [number, setApartmentNumber] = useState("");
     const [rooms_number, setApartmentRooms] = useState(0);
-  
+    const [renters, setApartmentRenter] = useState(0);
+
     const { id, sId } = useParams();
     let ApId:number;
     if (id!== undefined && sId!== undefined){
@@ -31,6 +28,7 @@ useEffect(()=>{
   if (data){
     setApartmentNumber(data.number);
     setApartmentRooms(data.rooms_number);
+    setApartmentRenter(0);
 
   }
 
@@ -64,39 +62,74 @@ const editMutation = useMutation({
         rooms_number:rooms_number,
         number:number,
         id: ApId,
+        renters:renters,
     });
 
   };
+  console.log("Data received:", data);
   return (
 
-    <div>
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto">
-     
-     <Link to="/" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white md:top-5 md:left-8 md:absolute">
-     <span className = "text-gray-50 text-2xl font-jost">RentFlow</span>
+    <div className ="z-50">
+          
 
-     </Link>
-     <div className="w-full md:w-[900px] bg-slate-50 rounded-lg border-gray-300">
-       <div className="px-4 py-6 space-y-4">
-       <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-             Edit Apartment
-           </h1>
-         <form className="space-y-4 sm:grid sm:col-span-2 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0" onSubmit={handleSubmit}>
+          <div className="flex items-center justify-center px-6 py-8 mx-auto">
+     
+     
+     <div className="w-full sm:w-[600px] border border-black rounded-lg">
+     <div className="">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 top-2 left-2 relative hover:bg-gray-100 rounded-lg cursor-pointer hover:stroke-violet-800" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" onClick={() => navigate(-1)}>
+        < path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+        </div>
+       <div className="px-4 py-6 space-y-4 ">
+        <div className='flex justify-center pb-2'>
+
+        <div className ='text-center' >
+        
+        <h1 className='text-lg font-medium'>Edit Apartment</h1>
+        </div>
+        </div>
+         <form className="space-y-4 " onSubmit={handleSubmit}>
            <div>
-           <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+           <label htmlFor="email" className="block mb-2 text-sm font-medium text-black">Number</label>
+           <div className='flex items-center'>
+             <span className='inline-block align-middle'>
+            <svg className='h-4 w-4 fill-none stroke-violet-800' xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+</svg>
+
+            </span> 
              <input
               value={number}
               onChange={(e) => setApartmentNumber(e.target.value)}
-              type="string" name=" number" id=' number' className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500 transition duration-25 focus:scale-105" placeholder="Unity Number" />
+             type="text" name="number" id='number' className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500 transition duration-25" placeholder="Name of the Condominium"/>
+             </div>
            </div>
            <div>
-             <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+            
+             <label htmlFor="name" className="block mb-2 text-sm font-medium text-black">Rooms</label>
+             <div className='flex items-center'>
+             <span className='inline-block align-middle'>
+            <svg className='h-4 w-4 fill-none stroke-violet-800' xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+</svg>
+
+            </span> 
              <input
              value={rooms_number}
-             onChange={(e) => setApartmentRooms(Number(e.target.value))}
-             type="rooms_number" name="rooms_number" id="rooms_number" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg transition duration-50 focus:ring-primary-600 focus:border-primary-600 focus:scale-105 block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500" placeholder="Rooms" />
+             onChange={(e) => setApartmentRooms(e.target.value)}
+             type="number" name="rooms_number" id="rooms_number" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg transition duration-50 block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500 appearance-none" placeholder="Location"/>
+             </div>
            </div>
-           <button type="submit" className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 col-start-2">Accept</button>
+           <div className='flex items-center py-4'>
+             <span className='inline-block align-middle'>
+            <svg className='h-4 w-4 stroke-transparent fill-transparent' xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+</svg>
+
+            </span>
+           <button type="submit" className="w-full font-medium text-white bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-900 col-start-2 transition duration-25">Create</button>
+           </div>
            </form>
             </div>
             </div>

@@ -8,7 +8,7 @@ class GroupNoticesSerializer(serializers.ModelSerializer):
 class ApartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Apartment
-        fields = ['rooms_number','number','id']
+        fields = ['rooms_number','number','id','renters']
  
 class CondominiumSerializer(serializers.ModelSerializer):
     class Meta:

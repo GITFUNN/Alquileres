@@ -10,7 +10,7 @@ import GetSoloCondominium from "./pages/GetSoloCondominium";
 import EditApartment from "./pages/EditApartmentPage";
 import GetSoloApartment from "./pages/GetSoloApartment";
 import RequestsSection from "./pages/RequestsSection";
-
+import PrivNoticesPage from "./pages/PrivNotices";
 function App() {
   return (
    
@@ -26,6 +26,7 @@ function App() {
         <Route path = "condominiums/:id/apartments/:sId" element = {<EditApartment/>}/>
         <Route path = "condominiums/:id" element = {<GetSoloCondominium/>}/>
         <Route path = "condominiums/:id/:sId" element = {<GetSoloApartment/>}/>
+        <Route path = "condominiums/:id/:sId/priv_notices" element = {<PrivNoticesPage/>}/>
         <Route path = "/requests" element = {<RequestsSection/>}/>
         <Route path = "/condominiums" element = {<CondominiumPage/>}/>
         <Route index element = {<HomePage />} />

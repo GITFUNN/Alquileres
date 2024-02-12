@@ -53,3 +53,9 @@ class SetRequestStateSerializer(serializers.ModelSerializer):
     class Meta:
         model = JoiningRequest
         fields = ['active', 'rejected']
+
+
+class PrivNoticeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrivNotices
+        fields ='__all__'

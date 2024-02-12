@@ -32,14 +32,14 @@ const JoiningRequest =({ ApId }: Props )=>{
             const user = await getUser(recipient);
             return createJoiningRequest(user.id, active, rejected, ApId);
           } catch (error) {
-            throw error; // Puedes manejar el error según tus necesidades
+            throw error; 
           }
         },
         onSuccess: () => {
           toast.success('Joining Request sent successfully');
         },
         onError: () => {
-          toast.error('Probably the user does not exist');
+          toast.error('Probably the user does not exist or the Email is invalid');
         },
       });   
       const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

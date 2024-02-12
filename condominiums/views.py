@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from . serializers import CondominiumSerializer, GroupNoticesSerializer, ApartmentSerializer,JoiningRequestSerializer,GetJoiningRequestSerializer,GetApartmentNumberSerializer,GetCondominiumNameSerializer,SetRenterRequestSerializer,SetRequestStateSerializer
+from . serializers import CondominiumSerializer, GroupNoticesSerializer, ApartmentSerializer,JoiningRequestSerializer,GetJoiningRequestSerializer,GetApartmentNumberSerializer,GetCondominiumNameSerializer,SetRenterRequestSerializer,SetRequestStateSerializer,PrivNoticeSerializer
 from . models import Condominium, GroupNotices,  PrivNotices, Apartment, JoiningRequest
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
@@ -181,3 +181,62 @@ def delete_request(request, pk):
             joining_request.delete()
             return Response(status = status.HTTP_204_NO_CONTENT)
         else: print("ERROR")
+
+
+@api_view(['GET'])
+def get_priv_notices(request,pk):
+    apartment = Apartment.objects.get(pk = pk)
+    condominium = apartment.condominium
+    renters = apartment.renters
+    if request.user == condominium.owner or request.user == renters:
+        priv_notices = PrivNotices.objects.filter(apartment_recipient = apartment)
+        serializer = PrivNoticeSerializer(priv_notices, many = True)
+        print(serializer.data)
+        return Response(serializer.data)
+    else: 
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    
+
+@api_view(['POST'])
+def create_priv_notice(request,pk):
+    apartment = Apartment.objects.get(pk=pk)
+    user = request.user
+    condominium = apartment.condominium
+    serializer = PrivNoticeSerializer(data = request.data)
+    if serializer.is_valid():
+        if request.user == condominium.owner:
+            serializer.save(owner_sender = user, apartment_recipient = apartment)
+            print(serializer.data)
+
+        else:
+            return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)  
+        return Response(serializer.data, status=status.HTTP_201_CREATED)   
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+def delete_priv_notice(request, pk):
+    priv_notice = PrivNotices.objects.get(pk=pk)
+    owner = priv_notice.owner_sender        
+    if owner == request.user:
+        priv_notice.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
+    else: 
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def edit_priv_notice(request,pk):
+    priv_notice = PrivNotices.objects.get(pk = pk)
+    serializer = PrivNoticeSerializer(priv_notice, data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def get_priv_notice(request,pk):
+    priv_notices = PrivNotices.objects.get(pk = pk)
+    serializer = PrivNoticeSerializer(priv_notices)
+    return Response(serializer.data)

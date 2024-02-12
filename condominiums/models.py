@@ -34,11 +34,14 @@ class RentReceipt(models.Model):
 class PrivNotices(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     owner_sender = models.ForeignKey('users.User',related_name='sender',  on_delete=models.CASCADE, default = None)
-    apartment_resipient = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='received_messages', default = None)
-    message = models.TextField(max_length=400, blank = True)
-    image = models.ImageField(upload_to='media', blank= True, null= True, default = None)
-    rent_receipt = models.ForeignKey(RentReceipt, blank = True, null = True, default = None, on_delete=models.CASCADE)
+    apartment_recipient = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='received_messages', default = None)
+    message = models.CharField(max_length=400)
 
+class PrivImages(models.Model):
+    image = models.ImageField(upload_to='media', blank= True, null= True, default = None)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='receipt_owner_image', default = None)
+    apartment_receipt = models.ForeignKey(Apartment, related_name='apartment_receipt_image', on_delete=models.CASCADE, default = None)
 
 class JoiningRequest(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)

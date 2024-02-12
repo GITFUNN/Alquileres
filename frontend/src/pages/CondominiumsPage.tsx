@@ -47,11 +47,20 @@ return (
       
       <div className ='text-center' >
         
+        
       <fieldset className="border-t border-black pb-4">
-        <legend className="mx-auto px-4 text-xl">Condominiums Section</legend>
+        <legend className="mx-auto px-4 text-xl">Condominium Section</legend>
     </fieldset>
+
       </div>
-    
+      <span className="inline-block transition duration-150 hover:bg-gray-100 p-2 rounded-full cursor-pointer hover:text-violet-800 " title='Go back'>
+
+<svg  className="h-5 w-5 relative  rounded-lg   text-center justify-center" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"  onClick={() => navigate(-1)}>
+<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+</svg>
+
+  
+   </span>
           {data?.map((condominium: Condominium) => (
          
             <div key={condominium.id} className="sm:py-1 sm:w-[600px] bg-white text-black my-6 sm:my-2 mx-auto border grid grid-cols-2 rounded-lg border-slate-100 font-sans">

@@ -20,7 +20,11 @@ urlpatterns = [
    path('set_request_state/<int:pk>/', views.set_request_state),
    path('delete_request/<int:pk>/', views.delete_request),
    path('set_renter/<int:pk>/<int:id>', views.set_renter),
-   #path('private_chat/<int:pk>'),
+   path('get_private_notices/<int:pk>/', views.get_priv_notices),
+   path('create_private_notice/<int:pk>/', views.create_priv_notice),
+   path('delete_private_notice/<int:pk>/', views.delete_priv_notice),
+   path('edit_private_notice/<int:pk>/', views.edit_priv_notice),
+   path('get_private_notice/<int:pk>/', views.get_priv_notice),
    #path('grupal_chat/<int:pk>')
 
    

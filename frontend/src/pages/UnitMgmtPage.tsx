@@ -2,13 +2,11 @@ import { getApartmentsRequest, deleteApartmentRequest, createApartmentRequest } 
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import React, { useState, Fragment, useEffect } from "react";
 import { toast, Toaster } from 'react-hot-toast';
-import { BsFillTrashFill } from "react-icons/bs";
-import { AiFillEdit } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
 import options from '../assets/options.svg';
 import { Menu, Transition } from '@headlessui/react';
 import { getSenderEmail } from "../api/user";
-
+import  PrivNoticesPage  from './PrivNotices.tsx';
 interface Props {
   condId: number
 };
@@ -230,7 +228,7 @@ const UnitMgmt = ({ condId }: Props) => {
                { (
                  <Menu as="div" className="relative">
                    <div>
-                     <Menu.Button className="absolute right-1.5 top-2 p-0.5  top-2 p-2 transition duration-150 hover:bg-gray-100 rounded-full hover:text-violet-800" title='Options' >
+                     <Menu.Button className="absolute right-1.5 top-2 p-0.5 transition duration-150 hover:bg-gray-100 rounded-full hover:text-violet-800" title='Options' >
                      <svg  className = "w-6 h-6 fill-none" xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
                   </svg>
@@ -280,7 +278,7 @@ const UnitMgmt = ({ condId }: Props) => {
 
              </div>            
 <div className="relative col-span-2" >
-<Link to = {`${apartments.id}/`}>
+<Link to = {`${apartments.id}/priv_notices`}>
 <span className="absolute right-1.5 top-2 p-0.5 transition duration-150 hover:bg-gray-100 rounded-full hover:text-violet-800" title='Chat'>
 <svg className="h-6 w-6 fill-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />

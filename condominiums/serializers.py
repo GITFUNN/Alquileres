@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Condominium, GroupNotices, PrivNotices, Apartment, JoiningRequest
+from .models import Condominium, GroupNotices, PrivNotices, Apartment, JoiningRequest,RentReceipt
 class GroupNoticesSerializer(serializers.ModelSerializer): 
     class Meta:
         model = GroupNotices
@@ -59,3 +59,8 @@ class PrivNoticeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrivNotices
         fields ='__all__'
+
+class RentReceiptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RentReceipt
+        fields = '__all__'

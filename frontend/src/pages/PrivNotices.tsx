@@ -1,4 +1,5 @@
-import {getTextPrivNotices,createTextPrivNotices,editTextPrivNotices,deleteTextPrivNotices,getTextPrivNotice } from "../api/apartment";
+import {getTextPrivNotices,createTextPrivNotices,editTextPrivNotices,deleteTextPrivNotices,getTextPrivNotice,
+getRentReceiptsRequest,getRentReceiptRequest,createRentReceiptRequest,editRentReceiptRequest,deleteRentReceiptRequest } from "../api/apartment";
 import { Toaster, toast } from 'react-hot-toast';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import React, { useState, Fragment, useEffect } from "react";
@@ -8,14 +9,32 @@ import options from '../assets/options.svg';
 import EditPrivNoticesPage from "./EditPrivNoticeText";
 
 
-
 export interface TextPrivateNotice {
     id: number;
     message: string;
 }
 
+export interface RentReceipt{
+  id:number;
+  number: number;
+  date: string;
+  recident_name: string;
+  net_amount: number;
+  expenses: number;
+  expiry_date: string;
+  phone_number: string;
+}
+
+
     const PrivNoticesPage =()=>{
       const [message, setMessage] = useState("");
+      const [number, setNumber] = useState(0);
+      const [date, setDate] = useState("");
+      const [recident_name, setRecidentName] = useState("0");
+      const [net_amount, setNetAmount] = useState(0);
+      const [expenses, setExpensen] = useState(0);
+      const [expiry_date, setExpiryDate] = useState("");
+      const [phone_number, setPhoneNumber] = useState("");
       const [show, setShow] = useState(false);
       const { id, sId } = useParams();
       let ApId:number;
@@ -29,6 +48,11 @@ export interface TextPrivateNotice {
         queryKey:['TextPrivateNotices'],
         queryFn:()=> getTextPrivNotices(ApId) 
     })
+    const {data:rentReceiptData, error:rentReceiptError} = useQuery({
+      queryKey:['RentReceipts'],
+      queryFn:()=> getRentReceiptsRequest(ApId) 
+  })
+
 
     const createTextPrivNotice = useMutation({
         mutationFn: () => createTextPrivNotices(message, ApId),
@@ -48,7 +72,25 @@ export interface TextPrivateNotice {
         createTextPrivNotice.mutate();
         
       };
+
+      const createRentReceipt= useMutation({
+        mutationFn: () => createRentReceiptRequest(number,date,recident_name,net_amount,expenses,expiry_date,phone_number,ApId),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['RentReceipt'] })
+          toast.success('Success')
+          
+
+        },
+        onError: () => {
+          toast.error("error")
+        },
+      });
       
+      const handleRentReceiptSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        createRentReceipt.mutate();
+        
+      };      
 
 
 const deleteTextPrivNotice = useMutation({
@@ -65,14 +107,13 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
 
-
 if (error instanceof Error) return <> {toast.error(error.message)}</>
 return (
-  <div>
+  <div className=" flex flex-col max-h-164 sm:w-6/12 sm:mx-auto sm:border-x-2 pt-4 overflow-y-auto ">
  
-    <div className="flex justify-center">
+    <div className="flex justify-center ">
       
-      <div className = 'mx-auto my-auto w-11/12'>
+      <div className = 'mx-auto my-auto w-11/12 '>
       
       <div className ='text-center' >
         
@@ -80,28 +121,22 @@ return (
         <legend className="mx-auto px-4 text-xl">Private Notices</legend>
     </fieldset>
       </div>
+      <div className="">
     
           {data?.map((TextPrivateNotice:TextPrivateNotice) => (
          
-            <div key={TextPrivateNotice.id} className="sm:py-1 sm:w-[600px] bg-white text-black my-6 sm:my-2 mx-auto border grid grid-cols-2 rounded-lg border-slate-100 font-sans">
+            <div key={TextPrivateNotice.id} className="sm:py-1 sm:w-[600px] bg-white text-black my-6 sm:my-2 mx-auto border grid grid-cols-12 rounded-lg border-slate-100 font-sans "> 
                  {show &&
         
         <EditPrivNoticesPage id ={TextPrivateNotice.id} Apid={ApId} setShow={setShow}/>  
       }
-  
-              <div className='flex items-center'>
-             <span className='inline-block align-middle ml-2'> 
-            <svg className='h-4 w-4 fill-none stroke-2 stroke-violet-800' xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-</svg>
 
-            </span> 
-              <p className="px-4 py-3">TEXT{TextPrivateNotice.message}</p>
-            </div>
+              <p className="px-4 py-3 col-span-11">{TextPrivateNotice.message}</p>
+          
 
               <div className="z-50">
                   { (
-                    <Menu as="div" className="relative ml-2">
+                    <Menu as="div" className="relative ">
                       <div>
                         <Menu.Button className="absolute text-sm right-0 top-0 ">
                           <img
@@ -128,7 +163,7 @@ return (
                               onClick={() => {
                                 setShow(true);
                               }} 
-                                className={classNames(active ? 'bg-red-500 text-white dark:bg-slate-700 ' : '', 'block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200')}
+                                className={classNames(active ? 'bg-gray-100  dark:bg-slate-700 ' : '', 'block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200')}
                               >
                                   Edit
                               </span>
@@ -149,65 +184,40 @@ return (
                           </Menu.Item>
                         </Menu.Items>
                       </Transition>
-                    </Menu>
+                    </Menu> 
   
                   )}
   
-                </div>
-                <div className='flex items-center'>
-             <span className='inline-block align-middle ml-2'>
-            <svg className='h-4 w-4 fill-none stroke-2 stroke-violet-800' xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-</svg>
-
-            </span> 
-                <p className="px-4 py-3">{}</p>
-                </div>
-<div className="relative" >
-  <Link to = {``}>
-  <span className="absolute right-1.5 bottom-1.5 ">
-  <svg className="w-5 h-5 fill-none transition duration-150 hover:stroke-violet-800 " xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-</svg>
-
- 
-  </span>
-</Link>
-</div>
-                         
+                </div>                    
             </div>
-           
-           
-            
+  
           ))}
-        </div>
-        <form className="space-y-4 " onSubmit={handleTextSubmit}>
-           <div>
-           <label htmlFor="text" className="block mb-2 text-sm font-medium text-black">Name</label>
+          </div>
+          <form className="space-y-4 fixed mx-auto text-center justify-center" onSubmit={handleTextSubmit}>
+           <div className="flex items-center">                  
            <div className='flex items-center'>
-             <span className='inline-block align-middle'>
-            <svg className='h-4 w-4 fill-none stroke-violet-800' xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-</svg>
-
-            </span> 
              <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-             type="text" name="message" id='message' className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500 transition duration-25" placeholder="Name of the Condominium"
+             type="text" name="message" id='message' className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 transition duration-25" placeholder="Message"
              />
              </div>
-           </div>
-           <div className='flex items-center py-4'>
-             <span className='inline-block align-middle'>
-            <svg className='h-4 w-4 stroke-transparent fill-transparent' xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-</svg>
+           
+             <div className='block items-center'>
+      <button type="submit" className="focus:outline-none">
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+          </svg>
+        </span>
+      </button>
+    </div>
 
-            </span>
-           <button type="submit" className="w-full font-medium text-white bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-900 col-start-2 transition duration-25">Create</button>
            </div>
-           </form>                        
+           </form>
+          
+        </div>
+                             
     </div>
     </div>
   )

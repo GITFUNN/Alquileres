@@ -1,6 +1,6 @@
 import {authApi} from "./useAxios";
 import {Apartment} from  '../pages/UnitMgmtPage'
-import {TextPrivateNotice} from '../pages/PrivNotices.tsx'
+import {TextPrivateNotice,RentReceipt} from '../pages/PrivNotices.tsx'
 
 export const deleteApartmentRequest= async (id: number) => {
     await authApi.delete(`/condominiums/delete_apartment/${id}/`)
@@ -77,3 +77,43 @@ export const deleteTextPrivNotices= async (id: number) => {
          throw new Error('Error fetching apartment');    
      }
 }
+
+
+export const createRentReceiptRequest = async (number:number,date:string,recident_name:string,net_amount:number,expenses:number,expiry_date:string,phone_number:string ,Apid: number) => {  
+    await authApi.post(`/condominiums/create_private_notice/${Apid}/`, {number, date, recident_name, net_amount, expenses, expiry_date, phone_number});
+   
+
+ };
+ 
+
+ export const getRentReceiptsRequest = async(Apid:number) =>{
+    try {
+       const response = await authApi.get(`/condominiums/get_private_notices/${Apid}/`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error fetching NOTICES');    
+    }
+
+}
+
+export const editRentReceiptRequest= async(data : TextPrivateNotice) =>{
+    const formData = new FormData();
+        formData.append('messaje', data.message.toString())
+        await authApi.put(`/condominiums/edit_private_notice/${data.id}/`, formData);
+    
+}
+
+export const deleteRentReceiptRequest= async (id: number) => {
+    await authApi.delete(`/condominiums/delete_private_notice/${id}/`)
+  }
+
+
+  export const getRentReceiptRequest = async(id: number) =>{
+    try {
+        const response = await authApi.get(`/condominiums/get_private_notice/${id}/`);
+         return response.data;
+     } catch (error) {
+         throw new Error('Error fetching apartment');    
+     }
+}
+

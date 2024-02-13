@@ -12,7 +12,7 @@ import backimage from '../assets/cssback.png'
 interface Props {
     id: number;
     Apid:number;
-    setShow:boolean;
+    setShow:React.Dispatch<React.SetStateAction<boolean>>;
   }
 
 

@@ -22,8 +22,7 @@ const Header = () =>{
 
 
       return (
-        
-        
+        <div className=" bg-stone-200 ">
         <Disclosure as="nav" className="bg-grey dark:bg-gray-800">
         {({ open }) => (
           <>
@@ -271,7 +270,7 @@ const Header = () =>{
           </>
         )}
       </Disclosure>
-  
+      </div>
     )
 
 }

@@ -25,17 +25,19 @@ class RentReceipt(models.Model):
     apartment_receipt = models.ForeignKey(Apartment, related_name='apartment_receipt', on_delete=models.CASCADE, default = None)
     number = models.IntegerField(default = 0, unique = True)
     date = models.DateField(auto_now_add=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
     recident_name = models.CharField(max_length=40)
     net_amount = models.DecimalField(max_digits= 20, decimal_places=2)
     expenses = models.DecimalField(max_digits= 20, decimal_places=2)
     expiry_date = models.DateField(auto_now_add=False)
-    phone_number = models.IntegerField(default = None, null = True, blank = True)
+    phone_number = models.CharField(default = None, null = True, blank = True, max_length=255)
+
 
 class PrivNotices(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     owner_sender = models.ForeignKey('users.User',related_name='sender',  on_delete=models.CASCADE, default = None)
     apartment_recipient = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name='received_messages', default = None)
-    message = models.CharField(max_length=400)
+    message = models.CharField(max_length=2000)
 
 class PrivImages(models.Model):
     image = models.ImageField(upload_to='media', blank= True, null= True, default = None)

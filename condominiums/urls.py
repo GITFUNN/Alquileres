@@ -25,6 +25,12 @@ urlpatterns = [
    path('delete_private_notice/<int:pk>/', views.delete_priv_notice),
    path('edit_private_notice/<int:pk>/', views.edit_priv_notice),
    path('get_private_notice/<int:pk>/', views.get_priv_notice),
+   path('get_rent_receipts/<int:pk>/', views.get_rent_receipts),
+   path('create_rent_receipt/<int:pk>/', views.create_rent_receipt),
+   path('delete_rent_receipt/<int:pk>/', views.delete_rent_receipt),
+   path('edit_rent_receipt/<int:pk>/', views.edit_rent_receipt),
+   path('get_rent_receipt/<int:pk>/', views.get_rent_receipt),
+
    #path('grupal_chat/<int:pk>')
 
    

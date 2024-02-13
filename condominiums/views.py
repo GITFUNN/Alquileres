@@ -1,6 +1,6 @@
 from rest_framework.response import Response
-from . serializers import CondominiumSerializer, GroupNoticesSerializer, ApartmentSerializer,JoiningRequestSerializer,GetJoiningRequestSerializer,GetApartmentNumberSerializer,GetCondominiumNameSerializer,SetRenterRequestSerializer,SetRequestStateSerializer,PrivNoticeSerializer
-from . models import Condominium, GroupNotices,  PrivNotices, Apartment, JoiningRequest
+from . serializers import CondominiumSerializer, GroupNoticesSerializer, ApartmentSerializer,JoiningRequestSerializer,GetJoiningRequestSerializer,GetApartmentNumberSerializer,GetCondominiumNameSerializer,SetRenterRequestSerializer,SetRequestStateSerializer,PrivNoticeSerializer,RentReceiptSerializer
+from . models import Condominium, GroupNotices, PrivNotices, Apartment, JoiningRequest, RentReceipt
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
 from django.contrib.auth.decorators import login_required
@@ -240,3 +240,62 @@ def get_priv_notice(request,pk):
     priv_notices = PrivNotices.objects.get(pk = pk)
     serializer = PrivNoticeSerializer(priv_notices)
     return Response(serializer.data)
+
+
+
+@api_view(['POST'])
+def create_rent_receipt(request,pk):
+    apartment = Apartment.objects.get(pk=pk)
+    user = request.user
+    condominium = apartment.condominium
+    serializer = RentReceiptSerializer(data = request.data)
+    if serializer.is_valid():
+        if request.user == condominium.owner:
+            serializer.save(owner = user, apartment_recipient = apartment)
+            print(serializer.data)
+
+        else:
+            return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)  
+        return Response(serializer.data, status=status.HTTP_201_CREATED)   
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_rent_receipts(request,pk):
+    apartment = Apartment.objects.get(pk = pk)
+    condominium = apartment.condominium
+    renters = apartment.renters
+    if request.user == condominium.owner or request.user == renters:
+        rent_receipt = RentReceipt.objects.filter(apartment_recipient = apartment)
+        serializer = RentReceiptSerializer(rent_receipt, many = True)
+        print(serializer.data)
+        return Response(serializer.data)
+    else: 
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['PUT'])
+def edit_rent_receipt(request,pk):
+    rent_receipt = RentReceipt.objects.get(pk = pk)
+    serializer = RentReceipt(rent_receipt, data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def get_rent_receipt(request,pk):
+    rent_receipt = RentReceipt.objects.get(pk = pk)
+    serializer = RentReceiptSerializer(rent_receipt)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def delete_rent_receipt(request, pk):
+    rent_receipt = RentReceipt.objects.get(pk=pk)
+    owner = rent_receipt.owner     
+    if owner == request.user:
+        rent_receipt.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
+    else: 
+        return Response(status=status.HTTP_400_BAD_REQUEST)

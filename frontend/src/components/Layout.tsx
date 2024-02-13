@@ -9,10 +9,10 @@ import Header from './Header';
 const Layout = () =>{
     return(
         
-        <div>
+        <div className="">
             <Toaster/>
             <Header/>
-            <div className = "min-h-[1000px] bg-white dark:bg-gray-900">
+            <div className = "min-h-[1000px] ">
             <Outlet/>
             </div>
         </div>

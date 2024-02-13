@@ -10,6 +10,7 @@ import GetSoloCondominium from "./pages/GetSoloCondominium";
 import EditApartment from "./pages/EditApartmentPage";
 import GetSoloApartment from "./pages/GetSoloApartment";
 import RequestsSection from "./pages/RequestsSection";
+import Header from './components/Header';
 import PrivNoticesPage from "./pages/PrivNotices";
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path = "/register" element = {<RegisterPage/>}/>
         <Route path = "/login" element = {<LoginPage/>}/>
         <Route path = "/" element = {<Layout/>}>
+        <Route element={<Header />} />
         <Route path = "/create" element = {<CreateCondominiumPage/>}/>
         <Route path = "condominiums/edit/:id" element = {<EditCondominiumPage/>}/>
         <Route path = "condominiums/:id/apartments/:sId" element = {<EditApartment/>}/>

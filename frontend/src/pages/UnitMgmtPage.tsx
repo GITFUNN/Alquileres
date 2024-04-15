@@ -130,7 +130,7 @@ const UnitMgmt = ({ condId }: Props) => {
              <input
               value={number}
               onChange={(e) => setApartmentNumber(e.target.value)}
-             type="text" name="number" id='number' className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500 transition duration-25" placeholder="Name of the Condominium"/>
+             type="text" name="number" id='number' className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:ring-blue-500 transition duration-25" placeholder="Apartment Code"/>
              </div>
            </div>
            <div>
@@ -211,9 +211,6 @@ const UnitMgmt = ({ condId }: Props) => {
          </span>
              <p className="px-4 py-3">Rooms: {apartments.rooms_number}</p>
              </div>
-
-
-
              <div className='flex items-center col-span-2'>
           <span className='inline-block align-middle ml-2'>
           <svg className="h-4 w-4 fill-none" xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

@@ -2,12 +2,12 @@ import {getTextPrivNotices,createTextPrivNotices,editTextPrivNotices,deleteTextP
 getRentReceiptsRequest,getRentReceiptRequest,createRentReceiptRequest,editRentReceiptRequest,deleteRentReceiptRequest } from "../api/apartment";
 import { Toaster, toast } from 'react-hot-toast';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import React, { useState, Fragment, useEffect } from "react";
-import { Link,useParams } from  'react-router-dom';
+import React, { useState, Fragment, useEffect, useRef } from "react";
+import { Await, Link,useParams } from  'react-router-dom';
 import { Menu, Transition } from '@headlessui/react';
 import options from '../assets/options.svg';
 import EditPrivNoticesPage from "./EditPrivNoticeText";
-
+import "./styles.css";
 
 export interface TextPrivateNotice {
     id: number;
@@ -37,6 +37,7 @@ export interface RentReceipt{
       const [phone_number, setPhoneNumber] = useState("");
       const [show, setShow] = useState(false);
       const { id, sId } = useParams();
+      const messageRef = useRef<HTMLTextAreaElement>(null);
       let ApId:number;
       if (id!== undefined && sId!== undefined){
         ApId = Number(sId);
@@ -67,11 +68,16 @@ export interface RentReceipt{
         },
       });
       
-      const handleTextSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+      const handleTextSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        createTextPrivNotice.mutate();
-        
-      };
+        await createTextPrivNotice.mutateAsync(); // Espera a que la mutación tenga éxito
+
+  // Limpia el valor del textarea después de que la mutación tenga éxito
+  if (messageRef.current) {
+    setMessage(""); // Limpia el estado local
+    messageRef.current.value = ""; // Limpia el valor del textarea
+  }
+};
 
       const createRentReceipt= useMutation({
         mutationFn: () => createRentReceiptRequest(number,date,recident_name,net_amount,expenses,expiry_date,phone_number,ApId),
@@ -89,7 +95,7 @@ export interface RentReceipt{
       const handleRentReceiptSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         createRentReceipt.mutate();
-        
+      
       };      
 
 
@@ -107,25 +113,31 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
 
+useEffect(() => {
+  const scrollWindowToBottom = () => {
+    document.body.scrollTop = document.body.scrollHeight;
+  };
+
+  // Scroll hacia abajo al cargar la página
+  scrollWindowToBottom();
+}, []);
+
+
 if (error instanceof Error) return <> {toast.error(error.message)}</>
 return (
-  <div className=" flex flex-col max-h-164 sm:w-6/12 sm:mx-auto sm:border-x-2 pt-4 overflow-y-auto ">
+  <div className=" py-6">
+  <div className=" flex flex-col min-h-128 max-h-128 sm:max-h-164  lg:w-9/12 xl:w-6/12 w-full mx-auto sm:border-x-2 overflow-y-auto  scrollbar-thin scrollbar-track-transparent scrollbar-thumb-slate-200 scrollbar-corner-transparent scrollbar-track-rounded-full ">
  
     <div className="flex justify-center ">
       
       <div className = 'mx-auto my-auto w-11/12 '>
       
-      <div className ='text-center' >
-        
-      <fieldset className="border-t border-black pb-4">
-        <legend className="mx-auto px-4 text-xl">Private Notices</legend>
-    </fieldset>
-      </div>
+      
       <div className="">
     
           {data?.map((TextPrivateNotice:TextPrivateNotice) => (
          
-            <div key={TextPrivateNotice.id} className="sm:py-1 sm:w-[600px] bg-white text-black my-6 sm:my-2 mx-auto border grid grid-cols-12 rounded-lg border-slate-100 font-sans "> 
+            <div key={TextPrivateNotice.id} className="sm:py-1 lg:w-[550px]  bg-white text-black my-6 sm:my-2 mx-auto border grid grid-cols-12 rounded-tl-lg rounded-tr-lg rounded-br-lg border-slate-100 font-sans "> 
                  {show &&
         
         <EditPrivNoticesPage id ={TextPrivateNotice.id} Apid={ApId} setShow={setShow}/>  
@@ -193,33 +205,46 @@ return (
   
           ))}
           </div>
-          <form className="space-y-4 fixed mx-auto text-center justify-center" onSubmit={handleTextSubmit}>
-           <div className="flex items-center">                  
-           <div className='flex items-center'>
-             <input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-             type="text" name="message" id='message' className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-1.5 sm:p-2 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 transition duration-25" placeholder="Message"
-             />
-             </div>
-           
-             <div className='block items-center'>
-      <button type="submit" className="focus:outline-none">
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-          </svg>
-        </span>
-      </button>
-    </div>
-
-           </div>
-           </form>
+          
           
         </div>
                              
     </div>
+    
     </div>
+    <form
+    
+    
+     className="lg:flex lg:text-center lg:justify-center" onSubmit={handleTextSubmit}>
+      
+    <div className="flex items-center lg:w-9/12 xl:w-6/12">                  
+    <div className='flex items-center w-full'>
+      <textarea 
+      autoFocus
+      
+       value={message}
+       onChange={(e) => setMessage(e.target.value)}
+       ref = {messageRef}
+       name="message" id='message' className="bg-gray-50 border border-gray-300 text-gray-900 xl:text-sm w-full md:py-2.5 pl-2 h-auto resize-none min-h-8 max-h-12 relative rounded-full lg:rounded-none pt-2 "  placeholder="Write a message"
+      
+      />
+      
+      <div className='absolute right-1 lg:right-1/4 mx-2 align-middle items-center justify-center text-center mt-1'>
+<button type="submit" className="focus:outline-none">
+ <span>
+   <svg className="fill-none h-5 w-5 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+     <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+   </svg>
+ </span>
+</button>
+</div>
+      </div>
+    
+
+    </div>
+    </form>
+    </div>
+   
   )
 }
 

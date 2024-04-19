@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   getTextPrivNotices,
   createTextPrivNotices,
@@ -16,6 +17,16 @@ import React, { useState, Fragment, useEffect, useRef } from "react";
 import { Await, Link, useParams } from "react-router-dom";
 import { Menu, Transition } from "@headlessui/react";
 import options from "../assets/options.svg";
+=======
+import {getTextPrivNotices,createTextPrivNotices,editTextPrivNotices,deleteTextPrivNotices,getTextPrivNotice,
+getRentReceiptsRequest,getRentReceiptRequest,createRentReceiptRequest,editRentReceiptRequest,deleteRentReceiptRequest } from "../api/apartment";
+import { Toaster, toast } from 'react-hot-toast';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import React, { useState, Fragment, useEffect, useRef } from "react";
+import { Await, Link,useParams } from  'react-router-dom';
+import { Menu, Transition } from '@headlessui/react';
+import options from '../assets/options.svg';
+>>>>>>> 08e8c20f5c4aaae1c27c678fee9505a2bdf85e69
 import EditPrivNoticesPage from "./EditPrivNoticeText";
 import "./styles.css";
 
@@ -53,6 +64,7 @@ const PrivNoticesPage = () => {
   }
   const queryClient = useQueryClient();
 
+<<<<<<< HEAD
   const { data, error } = useQuery({
     queryKey: ["TextPrivateNotices"],
     queryFn: () => getTextPrivNotices(ApId),
@@ -61,6 +73,35 @@ const PrivNoticesPage = () => {
     queryKey: ["RentReceipts"],
     queryFn: () => getRentReceiptsRequest(ApId),
   });
+=======
+    const PrivNoticesPage =()=>{
+      const [message, setMessage] = useState("");
+      const [number, setNumber] = useState(0);
+      const [date, setDate] = useState("");
+      const [recident_name, setRecidentName] = useState("0");
+      const [net_amount, setNetAmount] = useState(0);
+      const [expenses, setExpensen] = useState(0);
+      const [expiry_date, setExpiryDate] = useState("");
+      const [phone_number, setPhoneNumber] = useState("");
+      const [show, setShow] = useState(false);
+      const { id, sId } = useParams();
+      const messageRef = useRef<HTMLTextAreaElement>(null);
+      let ApId:number;
+      if (id!== undefined && sId!== undefined){
+        ApId = Number(sId);
+        
+      } 
+    const queryClient = useQueryClient()
+    
+    const {data,error} = useQuery({
+        queryKey:['TextPrivateNotices'],
+        queryFn:()=> getTextPrivNotices(ApId) 
+    })
+    const {data:rentReceiptData, error:rentReceiptError} = useQuery({
+      queryKey:['RentReceipts'],
+      queryFn:()=> getRentReceiptsRequest(ApId) 
+  })
+>>>>>>> 08e8c20f5c4aaae1c27c678fee9505a2bdf85e69
 
   const createTextPrivNotice = useMutation({
     mutationFn: () => createTextPrivNotices(message, ApId),
@@ -77,12 +118,31 @@ const PrivNoticesPage = () => {
     event.preventDefault();
     await createTextPrivNotice.mutateAsync(); // Espera a que la mutación tenga éxito
 
+<<<<<<< HEAD
     // Limpia el valor del textarea después de que la mutación tenga éxito
     if (messageRef.current) {
       setMessage(""); // Limpia el estado local
       messageRef.current.value = ""; // Limpia el valor del textarea
     }
   };
+=======
+        },
+        onError: () => {
+          toast.error("error")
+        },
+      });
+      
+      const handleTextSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        await createTextPrivNotice.mutateAsync(); // Espera a que la mutación tenga éxito
+
+  // Limpia el valor del textarea después de que la mutación tenga éxito
+  if (messageRef.current) {
+    setMessage(""); // Limpia el estado local
+    messageRef.current.value = ""; // Limpia el valor del textarea
+  }
+};
+>>>>>>> 08e8c20f5c4aaae1c27c678fee9505a2bdf85e69
 
   const createRentReceipt = useMutation({
     mutationFn: () =>
@@ -105,10 +165,24 @@ const PrivNoticesPage = () => {
     },
   });
 
+<<<<<<< HEAD
   const handleRentReceiptSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     createRentReceipt.mutate();
   };
+=======
+        },
+        onError: () => {
+          toast.error("error")
+        },
+      });
+      
+      const handleRentReceiptSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        createRentReceipt.mutate();
+      
+      };      
+>>>>>>> 08e8c20f5c4aaae1c27c678fee9505a2bdf85e69
 
   const deleteTextPrivNotice = useMutation({
     mutationFn: deleteTextPrivNotices,
@@ -224,6 +298,7 @@ const PrivNoticesPage = () => {
               ))}
             </div>
           </div>
+<<<<<<< HEAD
         </div>
       </div>
       <form
@@ -263,10 +338,54 @@ const PrivNoticesPage = () => {
               </button>
             </div>
           </div>
+=======
+          
+          
+>>>>>>> 08e8c20f5c4aaae1c27c678fee9505a2bdf85e69
         </div>
       </form>
     </div>
+<<<<<<< HEAD
   );
 };
+=======
+    
+    </div>
+    <form
+    
+    
+     className="lg:flex lg:text-center lg:justify-center" onSubmit={handleTextSubmit}>
+      
+    <div className="flex items-center lg:w-9/12 xl:w-6/12">                  
+    <div className='flex items-center w-full'>
+      <textarea 
+      autoFocus
+      
+       value={message}
+       onChange={(e) => setMessage(e.target.value)}
+       ref = {messageRef}
+       name="message" id='message' className="bg-gray-50 border border-gray-300 text-gray-900 xl:text-sm w-full md:py-2.5 pl-2 h-auto resize-none min-h-8 max-h-12 relative rounded-full lg:rounded-none pt-2 "  placeholder="Write a message"
+      
+      />
+      
+      <div className='absolute right-1 lg:right-1/4 mx-2 align-middle items-center justify-center text-center mt-1'>
+<button type="submit" className="focus:outline-none">
+ <span>
+   <svg className="fill-none h-5 w-5 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+     <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+   </svg>
+ </span>
+</button>
+</div>
+      </div>
+    
+
+    </div>
+    </form>
+    </div>
+   
+  )
+}
+>>>>>>> 08e8c20f5c4aaae1c27c678fee9505a2bdf85e69
 
 export default PrivNoticesPage;

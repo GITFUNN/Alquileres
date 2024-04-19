@@ -30,6 +30,7 @@ urlpatterns = [
    path('delete_rent_receipt/<int:pk>/', views.delete_rent_receipt),
    path('edit_rent_receipt/<int:pk>/', views.edit_rent_receipt),
    path('get_rent_receipt/<int:pk>/', views.get_rent_receipt),
+   path ('get_owner/<int:pk>/', views.get_condominium_owner),
 
    #path('grupal_chat/<int:pk>')
 

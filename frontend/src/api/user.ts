@@ -20,6 +20,14 @@ export const getUser = async (email: string)=>{
       throw error;
     }
 }
+
+
+export const getUserAuthenticated = async ()=>{
+  const response = await authApi.get('users/get_auth_user/')
+  return response.data;
+}
+
+
 export const getSenderEmail = async(id:number)=>{
    try {
        const response = await authApi.get(`/users/get_sender/${id}/`);

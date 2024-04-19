@@ -37,3 +37,14 @@ export const editCondominiumRequest = async(data : Condominium) =>{
         await authApi.put(`/condominiums/edit/${data.id}/`, formData);
     
 }
+
+export const getOwner = async (id:number)=>{
+   try {
+      const response = await authApi.get(`/condominiums/get_owner/${id}/`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener el ID del usuario:', error);
+      throw error;
+    }
+}
+

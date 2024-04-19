@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from . models import User
-from .serializers import RegisterUserSerializer, MyTokenObtainPairSerializer,GetUserSerializer,GetSenderRequestSerializer
+from .serializers import RegisterUserSerializer, MyTokenObtainPairSerializer,GetUserSerializer,GetSenderRequestSerializer, GetAuthUserSerializer
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -61,3 +61,8 @@ def getSenderEmail(request,pk):
         return Response(serializer.data, status = status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+def get_auth_user (request):
+    user = request.user
+    serializer = GetAuthUserSerializer(user)
+    return Response(serializer.data, status = status.HTTP_200_OK)

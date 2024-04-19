@@ -26,3 +26,8 @@ class GetSenderRequestSerializer(serializers.ModelSerializer):
         fields = ['email']             
 
 
+class GetAuthUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email']
+    

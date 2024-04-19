@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from . serializers import CondominiumSerializer, GroupNoticesSerializer, ApartmentSerializer,JoiningRequestSerializer,GetJoiningRequestSerializer,GetApartmentNumberSerializer,GetCondominiumNameSerializer,SetRenterRequestSerializer,SetRequestStateSerializer,PrivNoticeSerializer,RentReceiptSerializer
+from . serializers import CondominiumSerializer, GroupNoticesSerializer, ApartmentSerializer,JoiningRequestSerializer,GetJoiningRequestSerializer,GetApartmentNumberSerializer,GetCondominiumNameSerializer,SetRenterRequestSerializer,SetRequestStateSerializer,PrivNoticeSerializer,RentReceiptSerializer,CondominiumOwnerSerializer
 from . models import Condominium, GroupNotices, PrivNotices, Apartment, JoiningRequest, RentReceipt
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.permissions import IsAuthenticated
 from users.models import User
 import datetime
+from django.db.models import Q
 @api_view(['GET'])
 def get_condominiums(request):
     user = request.user
@@ -299,3 +300,18 @@ def delete_rent_receipt(request, pk):
         return Response(status = status.HTTP_204_NO_CONTENT)
     else: 
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_condominium_owner(request,pk):
+    condominium = Condominium.objects.get(pk = pk)
+    owner = condominium.owner
+    seralizer = CondominiumOwnerSerializer(owner)
+    return Response(seralizer.data)
+
+@api_view(['GET'])
+def get_condominium_id(request):
+    user = request.user
+    apartment = Apartment.objects.filter(renters = user)
+    condominium = Condominium.objects.filter(Q(owner = user) | Q(condominium = apartment.condominium))
+    serializer = CondominiumSerializer(condominium)
+    return Response(serializer.data)

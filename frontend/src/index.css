@@ -1,10 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .bg-custom-background-image {
-    background-image: url('./assets/cssback.png'); /* Reemplaza '/path/to/your/image.jpg' con la ruta correcta a tu imagen */
-    background-size: cover /* Ajusta el tamaño de la imagen al contenedor */
-     /* Centra la imagen */
-    /* Agrega cualquier otra propiedad de background que desees */
-  }
+  background-image: url("./assets/cssback.png"); /* Reemplaza '/path/to/your/image.jpg' con la ruta correcta a tu imagen */
+  background-size: cover; /* Ajusta el tamaño de la imagen al contenedor */
+  /* Centra la imagen */
+  /* Agrega cualquier otra propiedad de background que desees */
+}

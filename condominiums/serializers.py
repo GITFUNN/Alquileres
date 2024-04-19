@@ -20,6 +20,13 @@ class CondominiumSerializer(serializers.ModelSerializer):
         serializer = GroupNoticesSerializer(group_notices, many = True)
         return serializer.data
   
+class CondominiumOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Condominium
+        fields = ['owner']
+
+
+
 class JoiningRequestSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -64,3 +71,6 @@ class RentReceiptSerializer(serializers.ModelSerializer):
     class Meta:
         model = RentReceipt
         fields = '__all__'
+
+
+

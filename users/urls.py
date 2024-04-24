@@ -8,6 +8,5 @@ urlpatterns = [
     path('register/', views.register),
     path('get/<str:email>/', views.get_user),
     path('get_sender/<int:pk>/', views.getSenderEmail),
-    path ('get_auth_user/', )
 ]
 

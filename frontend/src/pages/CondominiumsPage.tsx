@@ -29,9 +29,9 @@ const CondominiumPage = () => {
   });
 
 
-export const isOwnerFunction()=>{
+/*export const isOwnerFunction()=>{
   getOwner()
-},
+},*/
 
 
 

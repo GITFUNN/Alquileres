@@ -19,7 +19,8 @@ export default {
        colors: {
         'regal-blue': '#245fc9',
         'white-gray': '#f5f5f5',
-         
+        'light-orange': '#fa8919',
+        
       },
     },
   },

@@ -27,7 +27,7 @@ const Header = () => {
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-              <div className="relative flex h-14 items-center justify-between">
+              <div className="relative flex h-12 lg:h-14 items-center justify-between">
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
 
                   <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-600 hover:text-gray-900 dark:text-slate-200 dark:hover:text-slate-50">

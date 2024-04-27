@@ -18,7 +18,6 @@ import { Menu, Transition } from "@headlessui/react";
 import options from "../assets/options.svg";
 import EditPrivNoticesPage from "./EditPrivNoticeText";
 import ReceiptComponent from "./ReceiptComponent";
-
 export interface TextPrivateNotice {
   id: number;
   message: string;
@@ -29,23 +28,26 @@ export interface RentReceipts {
   recident_name: string;
   net_amount: number;
   expenses: number;
-  expiry_date: number;
-  phone_number: number;
+  expire_date: string;
+  phone_number: string;
+  total_amount: number;
   ApId: number;
+  id: number;
 }
 const PrivNoticesPage2 = () => {
   const [message, setMessage] = useState("");
-  const [number, setNumber] = useState(0);
+  const [number, setNumber] = useState<number>();
   const [date, setDate] = useState("");
-  const [recident_name, setRecidentName] = useState("0");
-  const [net_amount, setNetAmount] = useState(0);
-  const [expenses, setExpensen] = useState(0);
-  const [expiry_date, setExpiryDate] = useState("");
+  const [recident_name, setRecidentName] = useState("");
+  const [net_amount, setNetAmount] = useState<number>();
+  const [expenses, setExpenses] = useState<number>();
+  const [expire_date, setExpireDate] = useState("");
   const [phone_number, setPhoneNumber] = useState("");
+  const [total_amount, setTotalAmount] = useState<number>();
   const [showMessage, setShowMessage] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [showMedia, setShowMedia] = useState(false);
-  const [show, setShow] = useState(false);
+  const [showReceiptForm, setShowReceiptForm] = useState(false);
   const { id, sId } = useParams();
   const messageRef = useRef<HTMLTextAreaElement>(null);
   let ApId: number;
@@ -86,18 +88,20 @@ const PrivNoticesPage2 = () => {
   const createRentReceipt = useMutation({
     mutationFn: () =>
       createRentReceiptRequest(
-        number,
+        Number(number),
         date,
         recident_name,
-        net_amount,
-        expenses,
-        expiry_date,
+        Number(net_amount),
+        Number(expenses),
+        expire_date,
         phone_number,
+        Number(total_amount),
         ApId
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["RentReceipt"] });
-      toast.success("Success");
+      queryClient.invalidateQueries({ queryKey: ["RentReceipts"] });
+      toast.success("Receipt Created!");
+      setShowReceiptForm(false);
     },
     onError: () => {
       toast.error("error");
@@ -108,6 +112,17 @@ const PrivNoticesPage2 = () => {
     event.preventDefault();
     createRentReceipt.mutate();
   };
+
+  const deleteRentReceipt= useMutation ({
+    mutationFn: deleteRentReceiptRequest,
+    onSuccess:()=>{
+      queryClient.invalidateQueries({ queryKey: ["RentReceipts"] });
+      toast.success("Deleted!")
+    }
+
+  })
+    
+ 
 
   const handleClickChangeToMessage = () => {
     setShowMessage(true);
@@ -130,7 +145,7 @@ const PrivNoticesPage2 = () => {
     mutationFn: deleteTextPrivNotices,
     onSuccess: () => {
       queryClient.invalidateQueries(["TextPrivateNotices"]);
-      toast.success("Text deleted successfully");
+      toast.success("Deleted!");
     },
     onError: (error) => {
       console.error(error);
@@ -144,7 +159,7 @@ const PrivNoticesPage2 = () => {
 
   if (error instanceof Error) return <> {toast.error(error.message)}</>;
   return (
-    <div id="principal" className="h-full font-display">
+    <div id="principal" className="h-full font-display relative">
       <div>
         <div>
           <div className="relative min-h-screen flex flex-col">
@@ -205,7 +220,7 @@ const PrivNoticesPage2 = () => {
                   </div>
                 </div>
                 {showMessage && (
-                  <div className="p-2 flex flex-col h-screen justify-between border-r bg-white-gray w-full ">
+                  <div className="p-2 flex flex-col h-screen justify-between border-r bg-white-gray w-full">
                     <div className="flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white">
                       <div className="flex items-center space-x-4">
                         <p>Aurelio's Apartments 1A C1 </p>
@@ -219,7 +234,60 @@ const PrivNoticesPage2 = () => {
                             className="border rounded-tl-lg rounded-br-lg rounded-tr-lg p-3 my-3 xl:w-9/12 shadow-md bg-white border-t-1 border-t-orange-500  text-gray-800"
                             key={TextPrivateNotice.id}
                           >
+                            <div className="">
+
+                            <div className="z-50">
+                {
+                  <Menu as="div" className="relative">
+                    <div>
+                      <Menu.Button
+                        className=" p-0.5 transition duration-150 hover:bg-gray-100 rounded-full "
+                        title="Options"
+                      >
+                        
+                        <svg xmlns="http://www.w3.org/2000/svg " viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="h-6 w-6 fill-black">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+</svg>
+
+
+                      </Menu.Button>
+                    </div>
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <Menu.Items className="absolute left-0 z-10 mt-2 w-48 origin-top-left bg-white dark:bg-slate-950 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        
+                        <Menu.Item>
+                          {({ active }) => (
+                            <span
+                              onClick={() => {
+                                deleteTextPrivNotice.mutate(TextPrivateNotice.id);
+                              }}
+                              className={classNames(
+                                active
+                                  ? "bg-red-500 text-white dark:bg-slate-700 "
+                                  : "",
+                                "block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200"
+                              )}
+                            >
+                              Delete
+                            </span>
+                          )}
+                        </Menu.Item>
+                      </Menu.Items>
+                    </Transition>
+                  </Menu>
+                }
+              </div>
                             <p>{TextPrivateNotice.message}</p>
+                            
+                          </div>
                           </div>
                         ))}
                       </div>
@@ -260,94 +328,339 @@ const PrivNoticesPage2 = () => {
                     </div>
                   </div>
                 )}
+
                 {showReceipt && (
-                  <div className="p-2 flex flex-col h-screen justify-between border-r bg-white-gray w-full">
-                    <div className="flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ">
+                  <div className="p-2 flex flex-col h-screen justify-between border-r bg-white-gray w-full relative z-50">
+                    <div
+                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white
+                    ${showReceiptForm ? "" : "hidden"}
+                    `}
+                    >
                       <div className="flex items-center ">
                         <p>Aurelio's Apartments 1A C1 </p>
                         <div className=""></div>
                       </div>
                     </div>
-                    <div id="textid" className="flex flex-col overflow-auto">
-                      <div>
-                        <div className=" border-t-8 border-t-amber-500 border rounded-lg mb-8 shadow-md bg-white w-full  mx-auto  md:w-7/12 flex relative ">
+                    {showReceiptForm && (
+                      <form
+                        id="textid"
+                        className=" z-50 font-display"
+                        onSubmit={handleRentReceiptSubmit}
+                      >
+                        <div className=" absolute border-t-8 border-t-amber-500 border rounded-lg shadow-md bg-white w-11/12  mx-auto  md:w-7/12 flex left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                           <div className="grid grid-rows-8 p-6 w-full h-full">
-                            <div className="flex border-b-2 border-b-gray-200 items-center py-2">
+                            <div className="flex border-b-2 border-b-gray-200 items-center py-1 lg:py-2">
                               <h1 className="text-3xl justify-center font-semibold">
                                 Receipt
                               </h1>
                             </div>
                             <div className="flex items-center">
-                              <p className="font-semibold mr-2">N°</p>
-                              <p className="font-medium text-gray-800 ">
-                                1
-                              </p>
+                              <p className="font-semibold mr-4">N°</p>
+                              <input
+                                type="number"
+                                value={number}
+                                onChange={(e) =>
+                                  setNumber(Number(e.target.value))
+                                }
+                                className="font-medium text-gray-800 border-b outline-none focus:border-b-black"
+                                required
+                              ></input>
                             </div>
                             <div className="flex justify-between items-center">
                               <p className="font-semibold">Date</p>
-                              <p className="font-medium text-gray-800">Apr. 25, 2024</p>
+                              <input
+                                type="text"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                placeholder="YYYY-MM-DD"
+                                className="font-medium text-gray-800 border-b outline-none focus:border-b-black text-sm"
+                                pattern="^(?:\d{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])$"
+                                required
+                                title="El formato de la fecha debe ser YYYY-MM-DD"
+                              ></input>
                             </div>
                             <div className="flex justify-between items-center">
                               <p className="font-semibold">Resident</p>
-                              <p className="font-medium text-gray-800">
-                                Jon Doe
-                              </p>
+                              <input
+                                className="font-medium text-gray-800 border-b outline-none focus:border-b-black text-sm"
+                                type="text"
+                                value={recident_name}
+                                onChange={(e) =>
+                                  setRecidentName(e.target.value)
+                                }
+                                placeholder="Redisent's name"
+                                required
+                              ></input>
                             </div>
 
                             <div className="flex justify-between items-center">
                               <p className="font-semibold">Net Amount</p>
-                              <p className="font-medium text-gray-800">
-                                $114,000.00
-                              </p>
+                              <input
+                                className="font-medium text-gray-800 border-b outline-none focus:border-b-black text-sm"
+                                type="number"
+                                value={net_amount}
+                                placeholder="$00,000.00"
+                                onChange={(e) =>
+                                  setNetAmount(Number(e.target.value))
+                                }
+                                required
+                              ></input>
                             </div>
                             <div className="flex justify-between items-center">
                               <p className="font-semibold">Expenses</p>
-                              <p className="font-medium text-gray-800">
-                                
-                                $9,000.00
-                              </p>
+                              <input
+                                className="font-medium text-gray-800 border-b outline-none focus:border-b-black text-sm"
+                                type="number"
+                                value={expenses}
+                                onChange={(e) =>
+                                  setExpenses(Number(e.target.value))
+                                }
+                                placeholder="$00,000.00"
+                                required
+                              ></input>
                             </div>
 
                             <div className="flex justify-between items-center">
                               <p className="font-semibold">Expire Date</p>
-                              <p className="font-medium text-gray-800">
-                                
-                                2024-05-10
-                              </p>
+                              <input
+                                className="font-medium text-gray-800 border-b outline-none focus:border-b-black text-sm"
+                                type="text"
+                                value={expire_date}
+                                onChange={(e) => setExpireDate(e.target.value)}
+                                pattern="^(?:\d{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])$"
+                                required
+                                title="El formato de la fecha debe ser YYYY-MM-DD"
+                                placeholder="YYYY-MM-DD"
+                              ></input>
                             </div>
-                            <div className="flex justify-between items-center border-b-2 border-b-gray-200 ">
+                            <div className="flex justify-between items-center">
                               <p className="font-semibold">Phone Number</p>
-                              <p className="font-medium text-gray-800">
-                                3445123254
-                              </p>
+                              <input
+                                className="font-medium text-gray-800 border-b outline-none focus:border-b-black text-sm"
+                                type="number"
+                                value={phone_number}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                placeholder="xxx-xxx-xxx"
+                                required
+                              ></input>
                             </div>
-                            <div className="flex items-center py-4">
-                              <p className="font-semibold text-xl mr-2">
-                                Total
+                            <div className="flex items-center py-4 border-b-2 border-b-gray-200 mb-4">
+                              <p className="font-semibold text-xl mr-4">
+                                Total $
                               </p>
-                              <p className="font-medium text-gray-800">
-                                $124,000.00
-                              </p>
+                              <input
+                                className="font-medium text-gray-800 border-b outline-none focus:border-b-black "
+                                type="number"
+                                value={total_amount}
+                                onChange={(e) =>
+                                  setTotalAmount(Number(e.target.value))
+                                }
+                                placeholder="$00,000.00"
+                                required
+                              ></input>
+                            </div>
+                            <div className="flex justify-between mt-2">
+                              <button
+                                className="font-medium items-center text-center px-4 py-1 hover:bg-gray-100 text-gray-600 "
+                                onClick={() => setShowReceiptForm(false)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="submit"
+                                className="font-medium items-center text-center px-6 bg-light-orange hover:bg-orange-500 outline-none text-sm py-1"
+                              >
+                                Send Receipt
+                              </button>
                             </div>
                           </div>
                         </div>
+                      </form>
+                    )}
+
+                    <div
+                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${
+                        showReceiptForm ? "hidden" : ""
+                      }`}
+                    >
+                      <div className="flex items-center ">
+                        <p>Aurelio's Apartments 1A C1 </p>
+                        <div className=""></div>
+                      </div>
+                    </div>
+                    <div
+                      id="textid"
+                      className={` flex flex-col overflow-auto ${
+                        showReceiptForm ? " blur-md" : ""
+                      }`}
+                    >
+                      <div>
+                        {rentReceiptData?.map((RentReceipt: RentReceipts) => (
+                          <div
+                            className=" border-t-8 border-t-amber-500 border rounded-lg mb-8 shadow-md bg-white w-full  mx-auto  md:w-7/12 flex relative
+                        "
+                            key={RentReceipt.id}
+                          >
+
+                            <div className="grid grid-rows-8 p-6 w-full h-full">
+                              
+                              <div className="flex border-b-2 border-b-gray-200 items-center py-2 justify-between">
+                                <h1 className="text-3xl justify-center font-semibold">
+                                  Receipt 
+                                </h1>
+                                <div>
+                              
+
+<div className="z-50">
+                {
+                  <Menu as="div" className="relative">
+                    <div>
+                      <Menu.Button
+                        className=" p-0.5 transition duration-150 hover:bg-gray-100 rounded-full items-center justify-center"
+                        title="Options"
+                      >
+                        
+                        <svg xmlns="http://www.w3.org/2000/svg " viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="h-6 w-6 fill-black">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+</svg>
+
+
+                      </Menu.Button>
+                    </div>
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right bg-white dark:bg-slate-950 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <Menu.Item>
+                          {({ active }) => (
+                            
+                              <p 
+                                className={classNames(
+                                  active ? "bg-gray-100 dark:bg-slate-700" : "",
+                                  "block px-4 py-2 text-sm text-gray-700 dark:text-slate-200 cursor-pointer"
+                                )}
+                              >
+                                Edit
+                              </p>
+                            
+                          )}
+                        </Menu.Item>
+                        <Menu.Item>
+                          {({ active }) => (
+                            <span
+                              onClick={() => {
+                                deleteRentReceipt.mutate(RentReceipt.id);
+                              }}
+                              className={classNames(
+                                active
+                                  ? "bg-red-500 text-white dark:bg-slate-700 "
+                                  : "",
+                                "block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200"
+                              )}
+                            >
+                              Delete
+                            </span>
+                          )}
+                        </Menu.Item>
+                      </Menu.Items>
+                    </Transition>
+                  </Menu>
+                }
+              </div>
+
+                              </div>
+                              </div>
+                              
+                              <div className="flex items-center">
+                                <p className="font-semibold mr-2">N°</p>
+                                <p className="font-medium text-gray-800 ">
+                                  {RentReceipt.number}
+                                </p>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <p className="font-semibold">Date</p>
+                                <p className="font-medium text-gray-800">
+                                  {RentReceipt.date}
+                                </p>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <p className="font-semibold">Resident</p>
+                                <p className="font-medium text-gray-800">
+                                  {RentReceipt.recident_name}
+                                </p>
+                              </div>
+
+                              <div className="flex justify-between items-center">
+                                <p className="font-semibold">Net Amount</p>
+                                <p className="font-medium text-gray-800">
+                                  ${RentReceipt.net_amount}
+                                </p>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <p className="font-semibold">Expenses</p>
+                                <p className="font-medium text-gray-800">
+                                  {RentReceipt.expenses}
+                                </p>
+                              </div>
+
+                              <div className="flex justify-between items-center">
+                                <p className="font-semibold">Expire Date</p>
+                                <p className="font-medium text-gray-800">
+                                  {RentReceipt.expire_date}
+                                </p>
+                              </div>
+                              <div className="flex justify-between items-center border-b-2 border-b-gray-200 ">
+                                <p className="font-semibold">Phone Number</p>
+                                <p className="font-medium text-gray-800">
+                                  {RentReceipt.phone_number}
+                                </p>
+                              </div>
+                              <div className="flex items-center py-4">
+                                <p className="font-semibold text-xl mr-2">
+                                  Total
+                                </p>
+                                <p className="font-medium text-gray-800">
+                                  ${RentReceipt.total_amount}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                     <div className=" border-t-2 lg:mb-16 mt-4 w-full relative flex items-center">
-                        <div className="flex py-2 px-1 items-center justify-center">
-                         <button className="border bg-light-orange text-black p-2 text-sm font-medium flex items-center px-4 hover:bg-orange-500 justify-center text-center align-middle">
-                         <svg xmlns="http://www.w3.org/2000/svg " className="fill-none h-5 w-5 stroke-black mr-2  justify-center text-center align-middle items-center"  viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-</svg>
-Create new receipt
-                         </button>
-                          
+                      <div className="flex py-2 px-1 items-center justify-center">
+                        <button
+                          className="border bg-light-orange text-black p-2 text-sm font-medium flex items-center px-4 hover:bg-orange-500 justify-center text-center align-middle"
+                          onClick={() => setShowReceiptForm(true)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg "
+                            className="fill-none h-5 w-5 stroke-black mr-2  justify-center text-center align-middle items-center"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                          Create new receipt
+                        </button>
                       </div>
                     </div>
                   </div>
-                  
                 )}
               </div>
+
               <div className="bg-gray-50 px-2 lg:flex-shrink-0 xl:block xl:w-96">
                 <div className="h-full bg-gray-50 relative">
                   <div className="lg:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-medium pointer-events-none hidden">

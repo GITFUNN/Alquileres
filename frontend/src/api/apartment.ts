@@ -1,6 +1,6 @@
 import {authApi} from "./useAxios";
 import {Apartment} from  '../pages/UnitMgmtPage'
-import {TextPrivateNotice,RentReceipt} from '../pages/PrivNotices.tsx'
+import {TextPrivateNotice,RentReceipts} from '../pages/Noticeprov.tsx'
 
 export const deleteApartmentRequest= async (id: number) => {
     await authApi.delete(`/condominiums/delete_apartment/${id}/`)
@@ -79,8 +79,8 @@ export const deleteTextPrivNotices= async (id: number) => {
 }
 
 
-export const createRentReceiptRequest = async (number:number,date:string,recident_name:string,net_amount:number,expenses:number,expiry_date:string,phone_number:string ,Apid: number) => {  
-    await authApi.post(`/condominiums/create_private_notice/${Apid}/`, {number, date, recident_name, net_amount, expenses, expiry_date, phone_number});
+export const createRentReceiptRequest = async (number:number,date:string,recident_name:string,net_amount:number,expenses:number,expire_date:string,phone_number:string,total_amount:number ,Apid: number) => {  
+    await authApi.post(`/condominiums/create_rent_receipt/${Apid}/`, {number, date, recident_name, net_amount, expenses, expire_date, phone_number, total_amount});
    
 
  };
@@ -88,10 +88,10 @@ export const createRentReceiptRequest = async (number:number,date:string,reciden
 
  export const getRentReceiptsRequest = async(Apid:number) =>{
     try {
-       const response = await authApi.get(`/condominiums/get_private_notices/${Apid}/`);
+       const response = await authApi.get(`/condominiums/get_rent_receipts/${Apid}/`);
         return response.data;
     } catch (error) {
-        throw new Error('Error fetching NOTICES');    
+        throw new Error('Error fetching Recepts');    
     }
 
 }
@@ -104,13 +104,13 @@ export const editRentReceiptRequest= async(data : TextPrivateNotice) =>{
 }
 
 export const deleteRentReceiptRequest= async (id: number) => {
-    await authApi.delete(`/condominiums/delete_private_notice/${id}/`)
+    await authApi.delete(`/condominiums/delete_rent_receipt/${id}/`)
   }
 
 
   export const getRentReceiptRequest = async(id: number) =>{
     try {
-        const response = await authApi.get(`/condominiums/get_private_notice/${id}/`);
+        const response = await authApi.get(`/condominiums/get_rent_receipt/${id}/`);
          return response.data;
      } catch (error) {
          throw new Error('Error fetching apartment');    

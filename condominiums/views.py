@@ -27,7 +27,6 @@ def create_condominium(request):
     if serializer.is_valid():
         serializer.save(owner = request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)   
-    print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
 
@@ -61,7 +60,6 @@ def get_apartments(request,pk):
     if request.user == condominium.owner:
         apartments = Apartment.objects.filter(condominium = condominium)
         serializer = ApartmentSerializer(apartments, many = True)
-        print(serializer.data)
         return Response(serializer.data)
     else: 
         return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -81,7 +79,6 @@ def create_apartment(request,pk):
         serializer.save(condominium = condominium)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['DELETE'])
@@ -114,7 +111,6 @@ def joining_request(request, pk):
     print("recipient info: ", recipient_info) 
     try:
         recipient_user = User.objects.get(pk=recipient_info)
-        print(recipient_user)
     except User.DoesNotExist:
         return Response({'error': 'El usuario destinatario no existe.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -123,7 +119,6 @@ def joining_request(request, pk):
             serializer.save(sender=request.user, recipient = recipient_user, condominium=condominium, apartment=apartment)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -158,7 +153,6 @@ def set_renter(request,pk,id):
     user = User.objects.get(pk = id)
     if serializer.is_valid():
         serializer.save(renters = user)
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
@@ -169,7 +163,6 @@ def set_request_state(request,pk):
     serializer =SetRequestStateSerializer(joining_request, data = request.data)
     if serializer.is_valid():
         serializer.save()
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
@@ -192,7 +185,6 @@ def get_priv_notices(request,pk):
     if request.user == condominium.owner or request.user == renters:
         priv_notices = PrivNotices.objects.filter(apartment_recipient = apartment)
         serializer = PrivNoticeSerializer(priv_notices, many = True)
-        print(serializer.data)
         return Response(serializer.data)
     else: 
         return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -207,12 +199,10 @@ def create_priv_notice(request,pk):
     if serializer.is_valid():
         if request.user == condominium.owner:
             serializer.save(owner_sender = user, apartment_recipient = apartment)
-            print(serializer.data)
 
         else:
             return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)  
         return Response(serializer.data, status=status.HTTP_201_CREATED)   
-    print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -254,7 +244,6 @@ def create_rent_receipt(request,pk):
         if request.user == condominium.owner:
             serializer.save(owner = user, apartment_recipient = apartment)
             print(serializer.data)
-
         else:
             return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)  
         return Response(serializer.data, status=status.HTTP_201_CREATED)   
@@ -270,7 +259,6 @@ def get_rent_receipts(request,pk):
     if request.user == condominium.owner or request.user == renters:
         rent_receipt = RentReceipt.objects.filter(apartment_recipient = apartment)
         serializer = RentReceiptSerializer(rent_receipt, many = True)
-        print(serializer.data)
         return Response(serializer.data)
     else: 
         return Response(status=status.HTTP_401_UNAUTHORIZED)

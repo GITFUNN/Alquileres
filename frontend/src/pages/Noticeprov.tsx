@@ -48,6 +48,7 @@ const PrivNoticesPage2 = () => {
   const [showReceipt, setShowReceipt] = useState(false);
   const [showMedia, setShowMedia] = useState(false);
   const [showReceiptForm, setShowReceiptForm] = useState(false);
+  const [showMediaForm, setShowMediaForm] = useState(false);
   const { id, sId } = useParams();
   const messageRef = useRef<HTMLTextAreaElement>(null);
   let ApId: number;
@@ -113,16 +114,13 @@ const PrivNoticesPage2 = () => {
     createRentReceipt.mutate();
   };
 
-  const deleteRentReceipt= useMutation ({
+  const deleteRentReceipt = useMutation({
     mutationFn: deleteRentReceiptRequest,
-    onSuccess:()=>{
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["RentReceipts"] });
-      toast.success("Deleted!")
-    }
-
-  })
-    
- 
+      toast.success("Deleted!");
+    },
+  });
 
   const handleClickChangeToMessage = () => {
     setShowMessage(true);
@@ -164,7 +162,8 @@ const PrivNoticesPage2 = () => {
         <div>
           <div className="relative min-h-screen flex flex-col">
             <div className="flex-grow w-full mx-auto lg:flex">
-              <div className="flex-1 min-w-0 bg-white xl:flex">
+              {/*Main Section*/}
+              <div className="flex-1 min-w-0 bg-white xl:flex ">
                 <div className="border-b border-gray-200 xl:border-b-0 xl:flex-shrink-0 xl:w-64 xl:border-r xl:border-gray-200 bg-gray-50 ml-2">
                   <div className="h-full pl-4 pr-2 lg:py-6 sm:pl-6 lg:pl-8 xl:pl-0">
                     <div className="h-full relative hidden lg:block">
@@ -219,6 +218,7 @@ const PrivNoticesPage2 = () => {
                     </div>
                   </div>
                 </div>
+                {/*Messages Section*/}
                 {showMessage && (
                   <div className="p-2 flex flex-col h-screen justify-between border-r bg-white-gray w-full">
                     <div className="flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white">
@@ -235,59 +235,65 @@ const PrivNoticesPage2 = () => {
                             key={TextPrivateNotice.id}
                           >
                             <div className="">
-
-                            <div className="z-50">
-                {
-                  <Menu as="div" className="relative">
-                    <div>
-                      <Menu.Button
-                        className=" p-0.5 transition duration-150 hover:bg-gray-100 rounded-full "
-                        title="Options"
-                      >
-                        
-                        <svg xmlns="http://www.w3.org/2000/svg " viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="h-6 w-6 fill-black">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-</svg>
-
-
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute left-0 z-10 mt-2 w-48 origin-top-left bg-white dark:bg-slate-950 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        
-                        <Menu.Item>
-                          {({ active }) => (
-                            <span
-                              onClick={() => {
-                                deleteTextPrivNotice.mutate(TextPrivateNotice.id);
-                              }}
-                              className={classNames(
-                                active
-                                  ? "bg-red-500 text-white dark:bg-slate-700 "
-                                  : "",
-                                "block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200"
-                              )}
-                            >
-                              Delete
-                            </span>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                }
-              </div>
-                            <p>{TextPrivateNotice.message}</p>
-                            
-                          </div>
+                              <div className="z-50">
+                                {
+                                  <Menu as="div" className="relative">
+                                    <div>
+                                      <Menu.Button
+                                        className=" p-0.5 transition duration-150 hover:bg-gray-100 rounded-full "
+                                        title="Options"
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg "
+                                          viewBox="0 0 24 24"
+                                          stroke-width="1.5"
+                                          stroke="currentColor"
+                                          className="h-6 w-6 fill-black"
+                                        >
+                                          <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                          />
+                                        </svg>
+                                      </Menu.Button>
+                                    </div>
+                                    <Transition
+                                      as={Fragment}
+                                      enter="transition ease-out duration-100"
+                                      enterFrom="transform opacity-0 scale-95"
+                                      enterTo="transform opacity-100 scale-100"
+                                      leave="transition ease-in duration-75"
+                                      leaveFrom="transform opacity-100 scale-100"
+                                      leaveTo="transform opacity-0 scale-95"
+                                    >
+                                      <Menu.Items className="absolute left-0 z-10 mt-2 w-48 origin-top-left bg-white dark:bg-slate-950 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <span
+                                              onClick={() => {
+                                                deleteTextPrivNotice.mutate(
+                                                  TextPrivateNotice.id
+                                                );
+                                              }}
+                                              className={classNames(
+                                                active
+                                                  ? "bg-red-500 text-white dark:bg-slate-700 "
+                                                  : "",
+                                                "block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200"
+                                              )}
+                                            >
+                                              Delete
+                                            </span>
+                                          )}
+                                        </Menu.Item>
+                                      </Menu.Items>
+                                    </Transition>
+                                  </Menu>
+                                }
+                              </div>
+                              <p>{TextPrivateNotice.message}</p>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -328,6 +334,7 @@ const PrivNoticesPage2 = () => {
                     </div>
                   </div>
                 )}
+                {/*Receipts Section*/}
 
                 {showReceipt && (
                   <div className="p-2 flex flex-col h-screen justify-between border-r bg-white-gray w-full relative z-50">
@@ -501,82 +508,86 @@ const PrivNoticesPage2 = () => {
                         "
                             key={RentReceipt.id}
                           >
-
                             <div className="grid grid-rows-8 p-6 w-full h-full">
-                              
                               <div className="flex border-b-2 border-b-gray-200 items-center py-2 justify-between">
                                 <h1 className="text-3xl justify-center font-semibold">
-                                  Receipt 
+                                  Receipt
                                 </h1>
                                 <div>
-                              
-
-<div className="z-50">
-                {
-                  <Menu as="div" className="relative">
-                    <div>
-                      <Menu.Button
-                        className=" p-0.5 transition duration-150 hover:bg-gray-100 rounded-full items-center justify-center"
-                        title="Options"
-                      >
-                        
-                        <svg xmlns="http://www.w3.org/2000/svg " viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="h-6 w-6 fill-black">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-</svg>
-
-
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right bg-white dark:bg-slate-950 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Menu.Item>
-                          {({ active }) => (
-                            
-                              <p 
-                                className={classNames(
-                                  active ? "bg-gray-100 dark:bg-slate-700" : "",
-                                  "block px-4 py-2 text-sm text-gray-700 dark:text-slate-200 cursor-pointer"
-                                )}
-                              >
-                                Edit
-                              </p>
-                            
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <span
-                              onClick={() => {
-                                deleteRentReceipt.mutate(RentReceipt.id);
-                              }}
-                              className={classNames(
-                                active
-                                  ? "bg-red-500 text-white dark:bg-slate-700 "
-                                  : "",
-                                "block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200"
-                              )}
-                            >
-                              Delete
-                            </span>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                }
-              </div>
-
+                                  <div className="z-50">
+                                    {
+                                      <Menu as="div" className="relative">
+                                        <div>
+                                          <Menu.Button
+                                            className=" p-0.5 transition duration-150 hover:bg-gray-100 rounded-full items-center justify-center"
+                                            title="Options"
+                                          >
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg "
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              className="h-6 w-6 fill-black"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                              />
+                                            </svg>
+                                          </Menu.Button>
+                                        </div>
+                                        <Transition
+                                          as={Fragment}
+                                          enter="transition ease-out duration-100"
+                                          enterFrom="transform opacity-0 scale-95"
+                                          enterTo="transform opacity-100 scale-100"
+                                          leave="transition ease-in duration-75"
+                                          leaveFrom="transform opacity-100 scale-100"
+                                          leaveTo="transform opacity-0 scale-95"
+                                        >
+                                          <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right bg-white dark:bg-slate-950 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                            <Menu.Item>
+                                              {({ active }) => (
+                                                <p
+                                                  className={classNames(
+                                                    active
+                                                      ? "bg-gray-100 dark:bg-slate-700"
+                                                      : "",
+                                                    "block px-4 py-2 text-sm text-gray-700 dark:text-slate-200 cursor-pointer"
+                                                  )}
+                                                >
+                                                  Edit
+                                                </p>
+                                              )}
+                                            </Menu.Item>
+                                            <Menu.Item>
+                                              {({ active }) => (
+                                                <span
+                                                  onClick={() => {
+                                                    deleteRentReceipt.mutate(
+                                                      RentReceipt.id
+                                                    );
+                                                  }}
+                                                  className={classNames(
+                                                    active
+                                                      ? "bg-red-500 text-white dark:bg-slate-700 "
+                                                      : "",
+                                                    "block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200"
+                                                  )}
+                                                >
+                                                  Delete
+                                                </span>
+                                              )}
+                                            </Menu.Item>
+                                          </Menu.Items>
+                                        </Transition>
+                                      </Menu>
+                                    }
+                                  </div>
+                                </div>
                               </div>
-                              </div>
-                              
+
                               <div className="flex items-center">
                                 <p className="font-semibold mr-2">N°</p>
                                 <p className="font-medium text-gray-800 ">
@@ -659,8 +670,178 @@ const PrivNoticesPage2 = () => {
                     </div>
                   </div>
                 )}
+
+                {showMedia && (
+                  <div className="p-2 flex flex-col border-r bg-white-gray w-full relative z-50 h-screen">
+                    <div
+                      className={`flex sm:items-center border-b border-gray-200 p-2 lg:p-3 my-1 bg-white
+                    ${showMediaForm ? "" : "hidden"}
+                    `}
+                    >
+                      <div className="flex items-center ">
+                        <p>Aurelio's Apartments 1A C1 </p>
+                        <div className=""></div>
+                      </div>
+                    </div>
+                    {/*Media Form Section*/}
+                    {showMediaForm && (
+                      <form
+                        id="textid"
+                        className=" z-50 font-display"
+                        onSubmit={handleRentReceiptSubmit}
+                      >
+                        <div className=" absolute border-t-8 border-t-amber-500 border rounded-lg shadow-md bg-white w-11/12  mx-auto  md:w-4/12 flex left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-auto">
+                          <div className="p-8 w-full h-full">
+                            <div className="py-1 lg:py-2 text-center w-full items-center">
+                              <h1 className="text-3xl justify-center font-semibold">
+                               Files
+                              </h1>
+                            </div>
+                            
+<div className="flex items-center justify-center w-full">
+    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+            </svg>
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+        </div>
+        <input id="dropzone-file" type="file" className="hidden" />
+    </label>
+</div> 
+
+                            <div className="flex justify-between pt-4">
+                              <button
+                                className="font-medium items-center text-center px-4 py-1 hover:bg-gray-100 text-gray-600 "
+                                onClick={() => setShowMediaForm(false)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="submit"
+                                className="font-medium items-center text-center px-6 bg-light-orange hover:bg-orange-500 outline-none text-sm"
+                              >
+                                Send
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    )}
+
+                    <div
+                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${
+                        showMediaForm ? "hidden" : ""
+                      }`}
+                    >
+                      <div className="flex items-center ">
+                        <p>Aurelio's Apartments 1A C1 </p>
+                        <div className=""></div>
+                      </div>
+                    </div>
+                    <div
+                      id="textid"
+                      className={` flex flex-col overflow-auto h-full justify-center  ${
+                        showMediaForm ? " blur-md" : ""
+                      }`}
+                    >
+                      {/*Media Maping*/}
+                      <div className="w-auto mx-auto">
+                        <div className="mx-auto border rounded-lg rounded-bl-none p-3 my-3 shadow-md bg-white border-t-1  text-gray-800 w-auto">
+                          <div className="">
+                            <div className="z-50 ">
+                              {
+                                <Menu as="div" className="relative ">
+                                  <div className="text-end">
+                                    <Menu.Button
+                                      className=" transition duration-150 hover:bg-gray-100 rounded-full  "
+                                      title="Options"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg "
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        className="h-6 w-6 fill-black"
+                                      >
+                                        <path
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                        />
+                                      </svg>
+                                    </Menu.Button>
+                                  </div>
+                                  <Transition
+                                    as={Fragment}
+                                    enter="transition ease-out duration-100"
+                                    enterFrom="transform opacity-0 scale-95"
+                                    enterTo="transform opacity-100 scale-100"
+                                    leave="transition ease-in duration-75"
+                                    leaveFrom="transform opacity-100 scale-100"
+                                    leaveTo="transform opacity-0 scale-95"
+                                  >
+                                    <Menu.Items className="absolute right-2 z-10 w-48 origin-top-right bg-white dark:bg-slate-950 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                      <Menu.Item>
+                                        {({ active }) => (
+                                          <span
+                                            onClick={() => {}}
+                                            className={classNames(
+                                              active
+                                                ? "bg-red-500 text-white dark:bg-slate-700 "
+                                                : "",
+                                              "block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200"
+                                            )}
+                                          >
+                                            Delete
+                                          </span>
+                                        )}
+                                      </Menu.Item>
+                                    </Menu.Items>
+                                  </Transition>
+                                </Menu>
+                              }
+                            </div>
+                            <div className="items-center justify-center text-center relative">
+                              <img
+                                className="  bg-blue-100 h-64 w-64 justify-center"
+                                src="/"
+                              ></img>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/*Media Bottom Section*/}
+                    <div className=" border-t-2 lg:mb-16 mt-4 w-full relative flex items-center">
+                      <div className="flex py-2 px-1 items-center justify-center">
+                        <button
+                          className="border bg-light-orange text-black p-2 text-sm font-medium flex items-center px-4 hover:bg-orange-500 justify-center text-center align-middle"
+                          onClick={() => setShowMediaForm(true)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg "
+                            className="fill-none h-5 w-5 stroke-black mr-2  justify-center text-center align-middle items-center"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                          Files
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
+              {/*Section Selector*/}
               <div className="bg-gray-50 px-2 lg:flex-shrink-0 xl:block xl:w-96">
                 <div className="h-full bg-gray-50 relative">
                   <div className="lg:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg font-medium pointer-events-none hidden">

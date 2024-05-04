@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from datetime import datetime
+from django.core.validators import FileExtensionValidator
 # Create your models here.
 
 
@@ -42,7 +43,8 @@ class RentReceipt(models.Model):
     net_amount = models.DecimalField(max_digits=20, decimal_places=3)
     expenses = models.DecimalField(max_digits=20, decimal_places=3)
     expire_date = models.DateField(auto_now_add=False)
-    total_amount = models.DecimalField(max_digits=20, decimal_places=3, default=None)
+    total_amount = models.DecimalField(
+        max_digits=20, decimal_places=3, default=None)
     phone_number = models.CharField(
         default=None, null=True, blank=True, max_length=255)
 
@@ -57,13 +59,29 @@ class PrivNotices(models.Model):
 
 
 class PrivImages(models.Model):
+    title = models.CharField(max_length=60, blank=True, default=None, null=True)
     image = models.ImageField(
         upload_to='media', blank=True, null=True, default=None)
     timestamp = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE,
                               related_name='receipt_owner_image', default=None)
-    apartment_receipt = models.ForeignKey(
+    apartment_recipient = models.ForeignKey(
         Apartment, related_name='apartment_receipt_image', on_delete=models.CASCADE, default=None)
+
+
+class Files(models.Model):
+    files = models.FileField(
+        upload_to='documents/',
+        validators=[FileExtensionValidator(
+            ['pdf', 'docx', 'odt', 'rtf', 'txt', 'epub', 'xls', 'xlsx', 'doc', 'csv', 'ppt', 'pptx'])],
+        default=None
+    )
+    title = models.CharField(max_length=60, default=None, blank=True, null=True)
+    owner = models.ForeignKey('users.User', on_delete=models.CASCADE,
+                              related_name='files_owner', default=None)
+    apartment_recipient = models.ForeignKey(
+        Apartment, related_name='files_apartment', on_delete=models.CASCADE, default=None)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 
 class JoiningRequest(models.Model):

@@ -117,3 +117,30 @@ export const deleteRentReceiptRequest= async (id: number) => {
      }
 }
 
+
+export const createPrivImageRequest = async (id: number, title:string, image:File) =>{
+    try {
+        const response = await authApi.post(`/condominiums/create_private_image/${id}/`,{title, image});
+        return response.data;
+    } catch (error){
+        throw new Error('Error creating file'); 
+    }
+}
+export const createPrivFileRequest = async (id: number, title:string, file:File) =>{
+    try {
+        const response = await authApi.post(`/condominiums/create_private_file/${id}/`,{title, file});
+        return response.data;
+    } catch (error){
+        throw new Error('Error creating file'); 
+    }
+}
+
+export const getPrivFileRequest = async (id: number) =>{
+    try {
+        const response = await authApi.get(`/condominiums/get_private_files/${id}/`);
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        throw new Error('Error fetching files');
+    }
+}

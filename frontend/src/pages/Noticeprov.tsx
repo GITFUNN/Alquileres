@@ -9,6 +9,9 @@ import {
   createRentReceiptRequest,
   editRentReceiptRequest,
   deleteRentReceiptRequest,
+  createPrivImageRequest,
+  createPrivFileRequest,
+  getPrivFileRequest,
 } from "../api/apartment";
 import { Toaster, toast } from "react-hot-toast";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -18,6 +21,9 @@ import { Menu, Transition } from "@headlessui/react";
 import options from "../assets/options.svg";
 import EditPrivNoticesPage from "./EditPrivNoticeText";
 import ReceiptComponent from "./ReceiptComponent";
+import { PresenceContext } from "framer-motion";
+
+//Interfaces
 export interface TextPrivateNotice {
   id: number;
   message: string;
@@ -34,6 +40,13 @@ export interface RentReceipts {
   ApId: number;
   id: number;
 }
+export interface PrivFiles {
+  id: number;
+  title: string;
+  file: File;
+}
+
+//States
 const PrivNoticesPage2 = () => {
   const [message, setMessage] = useState("");
   const [number, setNumber] = useState<number>();
@@ -49,6 +62,17 @@ const PrivNoticesPage2 = () => {
   const [showMedia, setShowMedia] = useState(false);
   const [showReceiptForm, setShowReceiptForm] = useState(false);
   const [showMediaForm, setShowMediaForm] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [imageTitle, setImageTitle] = useState("");
+  const [image, setImage] = useState();
+  const [title, setFileTitle] = useState("");
+  const [file, setFile] = useState<File>([]);
+
+  // ClasNames
+  function classNames(...classes: any) {
+    return classes.filter(Boolean).join(" ");
+  }
+
   const { id, sId } = useParams();
   const messageRef = useRef<HTMLTextAreaElement>(null);
   let ApId: number;
@@ -66,6 +90,31 @@ const PrivNoticesPage2 = () => {
     queryFn: () => getRentReceiptsRequest(ApId),
   });
 
+  const { data: privateFilesData, error: privateFilesError } = useQuery({
+    queryKey: ["PrivateFiles"],
+    queryFn: () => getPrivFileRequest(ApId),
+  })
+
+  // Mutations
+  const createPrivFile = useMutation({
+    mutationFn: () => {
+      if (file) {
+        return createPrivFileRequest(ApId, title, file);
+      } else {
+        return Promise.reject(new Error("File is undefined"));
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["PrivateFiles"] });
+      toast.success("File Created!");
+      setShowMediaForm(false);
+
+    },
+    onError: () => {
+      toast.error("An error occurred while creating, please try again");
+    },
+  });
+
   const createTextPrivNotice = useMutation({
     mutationFn: () => createTextPrivNotices(message, ApId),
     onSuccess: () => {
@@ -75,16 +124,6 @@ const PrivNoticesPage2 = () => {
       toast.error("An error occurred while creating, please try again");
     },
   });
-
-  const handleTextSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    await createTextPrivNotice.mutateAsync(); // Espera a que la mutación tenga éxito
-    // Limpia el valor del textarea después de que la mutación tenga éxito
-    if (messageRef.current) {
-      setMessage(""); // Limpia el estado local
-      messageRef.current.value = ""; // Limpia el valor del textarea
-    }
-  };
 
   const createRentReceipt = useMutation({
     mutationFn: () =>
@@ -109,11 +148,6 @@ const PrivNoticesPage2 = () => {
     },
   });
 
-  const handleRentReceiptSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    createRentReceipt.mutate();
-  };
-
   const deleteRentReceipt = useMutation({
     mutationFn: deleteRentReceiptRequest,
     onSuccess: () => {
@@ -121,6 +155,37 @@ const PrivNoticesPage2 = () => {
       toast.success("Deleted!");
     },
   });
+
+  const deleteTextPrivNotice = useMutation({
+    mutationFn: deleteTextPrivNotices,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["TextPrivateNotices"]);
+      toast.success("Deleted!");
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  // Handlers
+  const handleFileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    createPrivFile.mutate();
+  };
+
+  const handleTextSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await createTextPrivNotice.mutateAsync();
+    if (messageRef.current) {
+      setMessage("");
+      messageRef.current.value = "";
+    }
+  };
+
+  const handleRentReceiptSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    createRentReceipt.mutate();
+  };
 
   const handleClickChangeToMessage = () => {
     setShowMessage(true);
@@ -133,25 +198,12 @@ const PrivNoticesPage2 = () => {
     setShowReceipt(true);
     setShowMedia(false);
   };
+
   const handleClickChangeToMedia = () => {
     setShowMessage(false);
     setShowReceipt(false);
     setShowMedia(true);
   };
-
-  const deleteTextPrivNotice = useMutation({
-    mutationFn: deleteTextPrivNotices,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["TextPrivateNotices"]);
-      toast.success("Deleted!");
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
-  function classNames(...classes: any) {
-    return classes.filter(Boolean).join(" ");
-  }
 
   document.body.style.overflowY = "hidden";
 
@@ -486,9 +538,8 @@ const PrivNoticesPage2 = () => {
                     )}
 
                     <div
-                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${
-                        showReceiptForm ? "hidden" : ""
-                      }`}
+                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${showReceiptForm ? "hidden" : ""
+                        }`}
                     >
                       <div className="flex items-center ">
                         <p>Aurelio's Apartments 1A C1 </p>
@@ -497,9 +548,8 @@ const PrivNoticesPage2 = () => {
                     </div>
                     <div
                       id="textid"
-                      className={` flex flex-col overflow-auto ${
-                        showReceiptForm ? " blur-md" : ""
-                      }`}
+                      className={` flex flex-col overflow-auto ${showReceiptForm ? " blur-md" : ""
+                        }`}
                     >
                       <div>
                         {rentReceiptData?.map((RentReceipt: RentReceipts) => (
@@ -688,29 +738,34 @@ const PrivNoticesPage2 = () => {
                       <form
                         id="textid"
                         className=" z-50 font-display"
-                        onSubmit={handleRentReceiptSubmit}
+                        onSubmit={handleFileSubmit}
                       >
-                        <div className=" absolute border-t-8 border-t-amber-500 border rounded-lg shadow-md bg-white w-11/12  mx-auto  md:w-4/12 flex left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-auto">
+                        <div className=" absolute border-t-8 border-t-amber-500 border rounded-lg shadow-md bg-white mx-auto w-11/12 md:w-7/12 flex left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-auto ">
                           <div className="p-8 w-full h-full">
                             <div className="py-1 lg:py-2 text-center w-full items-center">
                               <h1 className="text-3xl justify-center font-semibold">
-                               Files
+                                Files
                               </h1>
                             </div>
-                            
-<div className="flex items-center justify-center w-full">
-    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-            <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-            </svg>
-            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-        </div>
-        <input id="dropzone-file" type="file" className="hidden" />
-    </label>
-</div> 
 
+                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white " htmlFor="large_size">Large file input</label>
+                            <input className="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="large_size" type="file"
+                              onChange={(e) => {
+                                if (e.target.files && e.target.files.length > 0 && e.target) {
+                                  setFile(e.target.files[0]); // Guardar el objeto de archivo en el estado
+                                  setButtonDisabled(false);
+                                } else {
+                                  setButtonDisabled(true);
+                                }
+                              }}
+                            />
+
+                            <input
+                              className="w-full mt-2 p-2 outline-none border-b-2 text-sm"
+                              value={title}
+                              onChange={(e) => setFileTitle(e.target.value)}
+                              placeholder="Short Description"
+                            ></input>
                             <div className="flex justify-between pt-4">
                               <button
                                 className="font-medium items-center text-center px-4 py-1 hover:bg-gray-100 text-gray-600 "
@@ -720,9 +775,11 @@ const PrivNoticesPage2 = () => {
                               </button>
                               <button
                                 type="submit"
-                                className="font-medium items-center text-center px-6 bg-light-orange hover:bg-orange-500 outline-none text-sm"
+                                disabled={buttonDisabled}
+                                className={`font-medium items-center text-center px-6 bg-light-orange hover:bg-orange-500 outline-none text-sm ${file ? " cursor-pointer" :"cursor-not-allowed bg-orange-300 hover:bg-orange-300"}`}
                               >
                                 Send
+
                               </button>
                             </div>
                           </div>
@@ -731,9 +788,8 @@ const PrivNoticesPage2 = () => {
                     )}
 
                     <div
-                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${
-                        showMediaForm ? "hidden" : ""
-                      }`}
+                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${showMediaForm ? "hidden" : ""
+                        }`}
                     >
                       <div className="flex items-center ">
                         <p>Aurelio's Apartments 1A C1 </p>
@@ -742,75 +798,80 @@ const PrivNoticesPage2 = () => {
                     </div>
                     <div
                       id="textid"
-                      className={` flex flex-col overflow-auto h-full justify-center  ${
-                        showMediaForm ? " blur-md" : ""
-                      }`}
+                      className={` flex flex-col overflow-auto h-full justify-center  ${showMediaForm ? " blur-md" : ""
+                        }`}
                     >
                       {/*Media Maping*/}
+
+
                       <div className="w-auto mx-auto">
-                        <div className="mx-auto border rounded-lg rounded-bl-none p-3 my-3 shadow-md bg-white border-t-1  text-gray-800 w-auto">
-                          <div className="">
-                            <div className="z-50 ">
-                              {
-                                <Menu as="div" className="relative ">
-                                  <div className="text-end">
-                                    <Menu.Button
-                                      className=" transition duration-150 hover:bg-gray-100 rounded-full  "
-                                      title="Options"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg "
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                        className="h-6 w-6 fill-black"
+                        {privateFilesData?.map((PrivFile: PrivFiles) => (
+                          <div className="mx-auto border rounded-lg rounded-bl-none p-3 my-3 shadow-md bg-white border-t-1  text-gray-800 w-auto"
+                          key={PrivFile.id}
+                          >
+                            <div>
+                              <div className="z-50 ">
+                                {
+                                  <Menu as="div" className="relative ">
+                                    <div className="text-end">
+                                      <Menu.Button
+                                        className=" transition duration-150 hover:bg-gray-100 rounded-full  "
+                                        title="Options"
                                       >
-                                        <path
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                                        />
-                                      </svg>
-                                    </Menu.Button>
-                                  </div>
-                                  <Transition
-                                    as={Fragment}
-                                    enter="transition ease-out duration-100"
-                                    enterFrom="transform opacity-0 scale-95"
-                                    enterTo="transform opacity-100 scale-100"
-                                    leave="transition ease-in duration-75"
-                                    leaveFrom="transform opacity-100 scale-100"
-                                    leaveTo="transform opacity-0 scale-95"
-                                  >
-                                    <Menu.Items className="absolute right-2 z-10 w-48 origin-top-right bg-white dark:bg-slate-950 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                      <Menu.Item>
-                                        {({ active }) => (
-                                          <span
-                                            onClick={() => {}}
-                                            className={classNames(
-                                              active
-                                                ? "bg-red-500 text-white dark:bg-slate-700 "
-                                                : "",
-                                              "block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200"
-                                            )}
-                                          >
-                                            Delete
-                                          </span>
-                                        )}
-                                      </Menu.Item>
-                                    </Menu.Items>
-                                  </Transition>
-                                </Menu>
-                              }
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg "
+                                          viewBox="0 0 24 24"
+                                          stroke-width="1.5"
+                                          stroke="currentColor"
+                                          className="h-6 w-6 fill-black"
+                                        >
+                                          <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                          />
+                                        </svg>
+                                      </Menu.Button>
+                                    </div>
+                                    <Transition
+                                      as={Fragment}
+                                      enter="transition ease-out duration-100"
+                                      enterFrom="transform opacity-0 scale-95"
+                                      enterTo="transform opacity-100 scale-100"
+                                      leave="transition ease-in duration-75"
+                                      leaveFrom="transform opacity-100 scale-100"
+                                      leaveTo="transform opacity-0 scale-95"
+                                    >
+                                      <Menu.Items className="absolute right-2 z-10 w-48 origin-top-right bg-white dark:bg-slate-950 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <span
+                                              onClick={() => { }}
+                                              className={classNames(
+                                                active
+                                                  ? "bg-red-500 text-white dark:bg-slate-700 "
+                                                  : "",
+                                                "block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-slate-200"
+                                              )}
+                                            >
+                                              Delete
+                                            </span>
+                                          )}
+                                        </Menu.Item>
+                                      </Menu.Items>
+                                    </Transition>
+                                  </Menu>
+                                }
+                              </div>
+                              <div className="items-center justify-center text-center">
+                                <p>{PrivFile.file}</p>
+                                <p>{PrivFile.title}</p>
+                                </div>
                             </div>
-                            <div className="items-center justify-center text-center relative">
-                              <img
-                                className="  bg-blue-100 h-64 w-64 justify-center"
-                                src="/"
-                              ></img>
-                            </div>
+
                           </div>
-                        </div>
+                        ))}
+
                       </div>
                     </div>
                     {/*Media Bottom Section*/}
@@ -855,9 +916,8 @@ const PrivNoticesPage2 = () => {
                           <span className="border-r border-gray-800" />
                           <p
                             id="message_button"
-                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${
-                              showMessage ? " border-b-2 border-orange-500" : ""
-                            }`}
+                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${showMessage ? " border-b-2 border-orange-500" : ""
+                              }`}
                             onClick={handleClickChangeToMessage}
                           >
                             Text Messages
@@ -865,9 +925,8 @@ const PrivNoticesPage2 = () => {
                           <span className="border-r border-gray-800" />
                           <p
                             id="receipt_button"
-                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${
-                              showReceipt ? " border-b-2 border-orange-500" : ""
-                            }`}
+                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${showReceipt ? " border-b-2 border-orange-500" : ""
+                              }`}
                             onClick={handleClickChangeToReceipt}
                           >
                             Receipts
@@ -875,9 +934,8 @@ const PrivNoticesPage2 = () => {
                           <span className="border-r border-gray-800 " />
                           <p
                             id="media_button"
-                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${
-                              showMedia ? " border-b-2 border-orange-500" : ""
-                            }`}
+                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${showMedia ? " border-b-2 border-orange-500" : ""
+                              }`}
                             onClick={handleClickChangeToMedia}
                           >
                             Media Section

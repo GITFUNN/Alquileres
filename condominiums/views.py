@@ -1,6 +1,6 @@
 from rest_framework.response import Response
-from . serializers import CondominiumSerializer, GroupNoticesSerializer, ApartmentSerializer,JoiningRequestSerializer,GetJoiningRequestSerializer,GetApartmentNumberSerializer,GetCondominiumNameSerializer,SetRenterRequestSerializer,SetRequestStateSerializer,PrivNoticeSerializer,RentReceiptSerializer,CondominiumOwnerSerializer
-from . models import Condominium, GroupNotices, PrivNotices, Apartment, JoiningRequest, RentReceipt
+from . serializers import CondominiumSerializer, GroupNoticesSerializer, ApartmentSerializer,JoiningRequestSerializer,GetJoiningRequestSerializer,GetApartmentNumberSerializer,GetCondominiumNameSerializer,SetRenterRequestSerializer,SetRequestStateSerializer,PrivNoticeSerializer,RentReceiptSerializer,CondominiumOwnerSerializer,FilesSerializer,PrivImagesSerializer
+from . models import Condominium, GroupNotices, PrivNotices, Apartment, JoiningRequest, RentReceipt,Files
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
 from django.contrib.auth.decorators import login_required
@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from users.models import User
 import datetime
 from django.db.models import Q
+from rest_framework.parsers import MultiPartParser
 @api_view(['GET'])
 def get_condominiums(request):
     user = request.user
@@ -303,3 +304,46 @@ def get_condominium_id(request):
     condominium = Condominium.objects.filter(Q(owner = user) | Q(condominium = apartment.condominium))
     serializer = CondominiumSerializer(condominium)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def create_private_file(request,pk):
+    apartment = Apartment.objects.get(pk = pk)
+    user = request.user
+    condominium = apartment.condominium
+    serializer = FilesSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        if request.user == condominium.owner:
+            serializer.save(owner=user, apartment_recipient=apartment)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+@api_view(['GET'])
+def get_private_files(request,pk):
+    user = request.user
+    apartment = Apartment.objects.get(pk=pk)
+    condominium = apartment.condominium
+    files = Files.objects.filter(apartment_recipient = apartment)
+    if (user == condominium.owner)or(user == apartment.renters):
+        serializer = FilesSerializer(files, context={'request':request}, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+
+
+@api_view(['POST'])
+def create_private_image(request,pk):
+    user=request.user
+    apartment=Apartment.objects.get(pk = pk)
+    condominium = apartment.condominium
+    serializer = PrivImagesSerializer(data=request.data, context={'request':request})
+    if serializer.is_valid():
+        if request.user == condominium.owner:
+            serializer.save(owner=user, apartment_recipient=apartment)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+    
+

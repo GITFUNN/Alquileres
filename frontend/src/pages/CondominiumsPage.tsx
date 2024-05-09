@@ -53,20 +53,13 @@ const CondominiumPage = () => {
   if (error instanceof Error) return <>{toast.error(error.message)}</>;
   return (
     <div className="flex justify-center font-display">
-      <div className="mx-auto my-auto w-11/12">
-        <div className="text-center">
-          <fieldset className="border-t border-black pb-4">
-            <legend className="mx-auto px-4 text-xl">
-              Condominium Section
-            </legend>
-          </fieldset>
-        </div>
+      <div className="mx-auto my-auto w-full">
         <span
           className="inline-block transition duration-150 hover:bg-gray-100 p-2 rounded-full cursor-pointer hover:text-violet-800 "
           title="Go back"
         >
           <svg
-            className="h-5 w-5 relative  rounded-lg   text-center justify-center"
+            className="h-5 w-5 relative rounded-lg ml-4 "
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             stroke-width="1.5"
@@ -83,7 +76,7 @@ const CondominiumPage = () => {
         {data?.map((condominium: Condominium) => (
           <div
             key={condominium.id}
-            className="sm:py-1 sm:w-[600px] shadow-sm bg-white text-black my-6 sm:my-2 mx-auto border-2 grid grid-cols-2 border-gray-400 font-sans"
+            className=" sm:py-1 sm:w-[600px] shadow-sm bg-white text-black my-6 sm:my-2 mx-auto border-2 grid grid-cols-2 border-gray-400 font-sans"
           >
             <div className="flex items-center">
               <span className="inline-block align-middle ml-2">

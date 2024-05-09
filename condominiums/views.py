@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from . serializers import CondominiumSerializer, GroupNoticesSerializer, ApartmentSerializer,JoiningRequestSerializer,GetJoiningRequestSerializer,GetApartmentNumberSerializer,GetCondominiumNameSerializer,SetRenterRequestSerializer,SetRequestStateSerializer,PrivNoticeSerializer,RentReceiptSerializer,CondominiumOwnerSerializer,FilesSerializer,PrivImagesSerializer
-from . models import Condominium, GroupNotices, PrivNotices, Apartment, JoiningRequest, RentReceipt,Files
+from . models import Condominium, GroupNotices, PrivNotices, Apartment, JoiningRequest, RentReceipt,Files, PrivImages
 from rest_framework import status, generics
 from rest_framework.decorators import api_view
 from django.contrib.auth.decorators import login_required
@@ -322,7 +322,7 @@ def create_private_file(request,pk):
 @api_view(['GET'])
 def get_private_files(request,pk):
     user = request.user
-    apartment = Apartment.objects.get(pk=pk)
+    apartment = Apartment.objects.get(pk=pk)    
     condominium = apartment.condominium
     files = Files.objects.filter(apartment_recipient = apartment)
     if (user == condominium.owner)or(user == apartment.renters):
@@ -333,17 +333,28 @@ def get_private_files(request,pk):
 
 
 
-
 @api_view(['POST'])
 def create_private_image(request,pk):
     user=request.user
     apartment=Apartment.objects.get(pk = pk)
     condominium = apartment.condominium
-    serializer = PrivImagesSerializer(data=request.data, context={'request':request})
+    serializer = PrivImagesSerializer(data=request.data)
     if serializer.is_valid():
         if request.user == condominium.owner:
             serializer.save(owner=user, apartment_recipient=apartment)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
-    
+
+
+@api_view(['GET'])
+def get_private_images(request,pk):
+    user = request.user
+    apartment = Apartment.objects.get(pk=pk)    
+    condominium = apartment.condominium
+    images = PrivImages.objects.filter(apartment_recipient = apartment)
+    if (user == condominium.owner)or(user == apartment.renters):
+        serializer = FilesSerializer(images, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
+
 

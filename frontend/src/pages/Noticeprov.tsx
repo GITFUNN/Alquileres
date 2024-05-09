@@ -46,6 +46,12 @@ export interface PrivFiles {
   file: File;
 }
 
+export interface PrivImages {
+  id: number;
+  title: string;
+  image: File;
+}
+
 //States
 const PrivNoticesPage2 = () => {
   const [message, setMessage] = useState("");
@@ -64,9 +70,10 @@ const PrivNoticesPage2 = () => {
   const [showMediaForm, setShowMediaForm] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [imageTitle, setImageTitle] = useState("");
-  const [image, setImage] = useState();
+  const [image, setImage] = useState<File | null >(null);
+  const [imgPreview, setImgPreview] = useState<string>("");
   const [title, setFileTitle] = useState("");
-  const [file, setFile] = useState<File>([]);
+  const [file, setFile] = useState<File>();
 
   // ClasNames
   function classNames(...classes: any) {
@@ -93,7 +100,7 @@ const PrivNoticesPage2 = () => {
   const { data: privateFilesData, error: privateFilesError } = useQuery({
     queryKey: ["PrivateFiles"],
     queryFn: () => getPrivFileRequest(ApId),
-  })
+  });
 
   // Mutations
   const createPrivFile = useMutation({
@@ -108,7 +115,24 @@ const PrivNoticesPage2 = () => {
       queryClient.invalidateQueries({ queryKey: ["PrivateFiles"] });
       toast.success("File Created!");
       setShowMediaForm(false);
+    },
+    onError: () => {
+      toast.error("An error occurred while creating, please try again");
+    },
+  });
 
+  const createPrivImage = useMutation({
+    mutationFn: () => {
+      if (file) {
+        return createPrivImageRequest(ApId, title, image);
+      } else {
+        return Promise.reject(new Error("File is undefined"));
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["PrivateFiles"] });
+      toast.success("File Created!");
+      setShowMediaForm(false);
     },
     onError: () => {
       toast.error("An error occurred while creating, please try again");
@@ -168,6 +192,28 @@ const PrivNoticesPage2 = () => {
   });
 
   // Handlers
+  const handleImageSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    createPrivImage.mutate();
+  };
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const image = event.target.files && event.target.files[0];
+    if (image){
+      setImage(image);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImgPreview(reader.result as string);
+      };
+      reader.readAsDataURL(image);
+    }
+  }
+  const removeImage = () => {
+    setImage(null);
+};
+
+
+
   const handleFileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     createPrivFile.mutate();
@@ -538,8 +584,9 @@ const PrivNoticesPage2 = () => {
                     )}
 
                     <div
-                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${showReceiptForm ? "hidden" : ""
-                        }`}
+                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${
+                        showReceiptForm ? "hidden" : ""
+                      }`}
                     >
                       <div className="flex items-center ">
                         <p>Aurelio's Apartments 1A C1 </p>
@@ -548,8 +595,9 @@ const PrivNoticesPage2 = () => {
                     </div>
                     <div
                       id="textid"
-                      className={` flex flex-col overflow-auto ${showReceiptForm ? " blur-md" : ""
-                        }`}
+                      className={` flex flex-col overflow-auto ${
+                        showReceiptForm ? " blur-md" : ""
+                      }`}
                     >
                       <div>
                         {rentReceiptData?.map((RentReceipt: RentReceipts) => (
@@ -748,10 +796,22 @@ const PrivNoticesPage2 = () => {
                               </h1>
                             </div>
 
-                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white " htmlFor="large_size">Large file input</label>
-                            <input className="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="large_size" type="file"
+                            <label
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white "
+                              htmlFor="large_size"
+                            >
+                              Large file input
+                            </label>
+                            <input
+                              className="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                              id="large_size"
+                              type="file"
                               onChange={(e) => {
-                                if (e.target.files && e.target.files.length > 0 && e.target) {
+                                if (
+                                  e.target.files &&
+                                  e.target.files.length > 0 &&
+                                  e.target
+                                ) {
                                   setFile(e.target.files[0]); // Guardar el objeto de archivo en el estado
                                   setButtonDisabled(false);
                                 } else {
@@ -776,10 +836,13 @@ const PrivNoticesPage2 = () => {
                               <button
                                 type="submit"
                                 disabled={buttonDisabled}
-                                className={`font-medium items-center text-center px-6 bg-light-orange hover:bg-orange-500 outline-none text-sm ${file ? " cursor-pointer" :"cursor-not-allowed bg-orange-300 hover:bg-orange-300"}`}
+                                className={`font-medium items-center text-center px-6 bg-light-orange hover:bg-orange-500 outline-none text-sm ${
+                                  file
+                                    ? " cursor-pointer"
+                                    : "cursor-not-allowed bg-orange-300 hover:bg-orange-300"
+                                }`}
                               >
                                 Send
-
                               </button>
                             </div>
                           </div>
@@ -788,8 +851,9 @@ const PrivNoticesPage2 = () => {
                     )}
 
                     <div
-                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${showMediaForm ? "hidden" : ""
-                        }`}
+                      className={`flex sm:items-center justify-between border-b border-gray-200 p-2 lg:p-3 my-1 bg-white ${
+                        showMediaForm ? "hidden" : ""
+                      }`}
                     >
                       <div className="flex items-center ">
                         <p>Aurelio's Apartments 1A C1 </p>
@@ -798,16 +862,17 @@ const PrivNoticesPage2 = () => {
                     </div>
                     <div
                       id="textid"
-                      className={` flex flex-col overflow-auto h-full justify-center  ${showMediaForm ? " blur-md" : ""
-                        }`}
+                      className={` flex flex-col overflow-auto h-full justify-center  ${
+                        showMediaForm ? " blur-md" : ""
+                      }`}
                     >
                       {/*Media Maping*/}
 
-
                       <div className="w-auto mx-auto">
                         {privateFilesData?.map((PrivFile: PrivFiles) => (
-                          <div className="mx-auto border rounded-lg rounded-bl-none p-3 my-3 shadow-md bg-white border-t-1  text-gray-800 w-auto"
-                          key={PrivFile.id}
+                          <div
+                            className="mx-auto border rounded-lg rounded-bl-none p-3 my-3 shadow-md bg-white border-t-1  text-gray-800 w-auto"
+                            key={PrivFile.id}
                           >
                             <div>
                               <div className="z-50 ">
@@ -846,7 +911,7 @@ const PrivNoticesPage2 = () => {
                                         <Menu.Item>
                                           {({ active }) => (
                                             <span
-                                              onClick={() => { }}
+                                              onClick={() => {}}
                                               className={classNames(
                                                 active
                                                   ? "bg-red-500 text-white dark:bg-slate-700 "
@@ -864,14 +929,12 @@ const PrivNoticesPage2 = () => {
                                 }
                               </div>
                               <div className="items-center justify-center text-center">
-                                <p>{PrivFile.file}</p>
+                                <p></p>
                                 <p>{PrivFile.title}</p>
-                                </div>
+                              </div>
                             </div>
-
                           </div>
                         ))}
-
                       </div>
                     </div>
                     {/*Media Bottom Section*/}
@@ -916,8 +979,9 @@ const PrivNoticesPage2 = () => {
                           <span className="border-r border-gray-800" />
                           <p
                             id="message_button"
-                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${showMessage ? " border-b-2 border-orange-500" : ""
-                              }`}
+                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${
+                              showMessage ? " border-b-2 border-orange-500" : ""
+                            }`}
                             onClick={handleClickChangeToMessage}
                           >
                             Text Messages
@@ -925,8 +989,9 @@ const PrivNoticesPage2 = () => {
                           <span className="border-r border-gray-800" />
                           <p
                             id="receipt_button"
-                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${showReceipt ? " border-b-2 border-orange-500" : ""
-                              }`}
+                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${
+                              showReceipt ? " border-b-2 border-orange-500" : ""
+                            }`}
                             onClick={handleClickChangeToReceipt}
                           >
                             Receipts
@@ -934,8 +999,9 @@ const PrivNoticesPage2 = () => {
                           <span className="border-r border-gray-800 " />
                           <p
                             id="media_button"
-                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${showMedia ? " border-b-2 border-orange-500" : ""
-                              }`}
+                            className={`hover:text-black cursor-pointer focus:border-blue-500 ${
+                              showMedia ? " border-b-2 border-orange-500" : ""
+                            }`}
                             onClick={handleClickChangeToMedia}
                           >
                             Media Section

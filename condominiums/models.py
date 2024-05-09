@@ -59,9 +59,9 @@ class PrivNotices(models.Model):
 
 
 class PrivImages(models.Model):
-    title = models.CharField(max_length=60, blank=True, default=None, null=True)
+    title = models.CharField(max_length=60, blank=False, default=None, null=True)
     image = models.ImageField(
-        upload_to='media', blank=True, null=True, default=None)
+        upload_to='media', blank=False, null=False, default=None)
     timestamp = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE,
                               related_name='receipt_owner_image', default=None)
@@ -71,10 +71,10 @@ class PrivImages(models.Model):
 
 class Files(models.Model):
     files = models.FileField(
-        upload_to='documents/',
-        validators=[FileExtensionValidator(
-            ['pdf', 'docx', 'odt', 'rtf', 'txt', 'epub', 'xls', 'xlsx', 'doc', 'csv', 'ppt', 'pptx'])],
-        default=None
+        default=None,
+        null=False,
+        blank=False,
+        
     )
     title = models.CharField(max_length=60, default=None, blank=True, null=True)
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE,

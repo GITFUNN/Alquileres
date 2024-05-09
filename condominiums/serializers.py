@@ -94,6 +94,7 @@ class FilesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Files
         fields = "__all__"
+        allow_empty_file=False
 
 
 class PrivImagesSerializer(serializers.ModelSerializer):
